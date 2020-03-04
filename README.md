@@ -1,6 +1,6 @@
 # Icarus - A Dapr-enabled runtime host for Azure Logic Apps
 
-![Icarus](./assets/icarus.jpg)
+![Icarus](./assets/icarus.png)
 
 Icarus is a lightweight host for Azure Logic Apps written in dotnet core that allows developers to execute Azure Logic Apps workflows using Dapr.
 
