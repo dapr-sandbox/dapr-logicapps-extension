@@ -30,6 +30,12 @@ dapr init --kubernetes
 
 Wait until the Dapr pods have the status `Running`.
 
+#### Create a Config Map for the workflow
+
+```
+kubectl create configmap logicapps --from-file ResponseLogicApp.json
+```
+
 #### Deploy Icarus
 
 ```
