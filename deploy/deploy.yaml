@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dapr-logicapps-host
+  labels:
+    app: dapr-logicapps-host
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dapr-logicapps-host
+  template:
+    metadata:
+      labels:
+        app: dapr-logicapps-host
+      annotations:
+        dapr.io/id: "logicapps"
+        dapr.io/enabled: "true"
+        dapr.io/port: "50003"
+        dapr.io/protocol: "grpc"
+    spec:
+      containers:
+      - name: host
+        image: yaron2/logicapps
+        ports:
+        - containerPort: 50003
+        imagePullPolicy: Always
+        volumeMounts:
+        - name: logicapps
+          mountPath: /data
+      volumes:
+        - name: logicapps
+          configMap:
+            name: logicapps

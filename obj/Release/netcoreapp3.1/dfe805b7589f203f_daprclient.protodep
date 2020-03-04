@@ -1,0 +1,5 @@
+obj/Release/netcoreapp3.1/Daprclient.cs \
+obj/Release/netcoreapp3.1/DaprclientGrpc.cs: /Users/yaronschneider/.nuget/packages/grpc.tools/2.27.0/build/native/include/google/protobuf/any.proto\
+ /Users/yaronschneider/.nuget/packages/grpc.tools/2.27.0/build/native/include/google/protobuf/empty.proto\
+ /Users/yaronschneider/.nuget/packages/grpc.tools/2.27.0/build/native/include/google/protobuf/duration.proto\
+ proto/daprclient.proto

@@ -1,0 +1,5 @@
+{
+  "extensions":[
+    { "name": "FlowExtension", "typeName":"Microsoft.Azure.Flow.WebJobs.Extensions.Initialization.FlowExtensionStartup, Flow.WebJobs.Extensions, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35"}
+  ]
+}
