@@ -77,7 +77,9 @@ namespace Microsoft.Dapr.LogicApps.ExecutionEnvironment
 
         public override Task<BindingResponseEnvelope> OnBindingEvent(BindingEventEnvelope request, Grpc.Core.ServerCallContext context)
         {
-            CallWorkflow();
+            var response = CallWorkflow();
+            Console.WriteLine(response);
+
             return Task.FromResult(new BindingResponseEnvelope());
         }
 
