@@ -62,7 +62,15 @@ namespace Microsoft.Dapr.LogicApps.ExecutionEnvironment
             var engine = dispatcher.GetEdgeManagementEngine();
             engine.RegisterEdgeEnvironment().Wait();
 
-            var workflowJson = File.ReadAllText("ResponseLogicApp.json");
+            var filename = "./ResponseLogicApp.json";
+            var path = Environment.GetEnvironmentVariable("WORKFLOW_DIR_PATH");
+            if (!string.IsNullOrEmpty(path))
+            {
+                filename = Path.Join(path, filename);
+            }
+
+            Console.WriteLine("Loading definition from " + filename);
+            var workflowJson = File.ReadAllText(filename);
             var workflowDef = JsonConvert.DeserializeObject<FlowPropertiesDefinition>(workflowJson);
             var def = new FlowDefinition(FlowConstants.GeneralAvailabilitySchemaVersion);
             def.Properties = workflowDef;
