@@ -56,11 +56,22 @@ namespace Microsoft.Dapr.LogicApps.ExecutionEnvironment
 
         public override Task<Any> OnInvoke(InvokeEnvelope request, Grpc.Core.ServerCallContext context)
         {
-            var response = CallWorkflow();
+            Console.WriteLine("Invoking Workflow...");
+            
             var any = new Any();
-            any.Value = ByteString.CopyFromUtf8(response);
 
-            return Task.FromResult(any);
+            try
+            {
+                var response = CallWorkflow();
+                any.Value = ByteString.CopyFromUtf8(response);
+
+                return Task.FromResult(any);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.InnerException.Message);
+                return Task.FromResult(any);
+            }
         }
 
         public override Task<GetTopicSubscriptionsEnvelope> GetTopicSubscriptions(Empty request, Grpc.Core.ServerCallContext context)

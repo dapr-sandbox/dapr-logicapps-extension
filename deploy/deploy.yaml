@@ -21,7 +21,7 @@ spec:
     spec:
       containers:
       - name: host
-        image: yaron2/logicapps
+        image: yaron2/logicapps2
         ports:
         - containerPort: 50003
         imagePullPolicy: Always
