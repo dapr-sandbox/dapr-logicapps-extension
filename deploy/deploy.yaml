@@ -26,9 +26,9 @@ spec:
         - containerPort: 50003
         imagePullPolicy: Always
         volumeMounts:
-        - name: logicapps
-          mountPath: /data
+        - name: workflows
+          mountPath: /workflows
       volumes:
-        - name: logicapps
+        - name: workflows
           configMap:
-            name: logicapps
+            name: workflows

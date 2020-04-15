@@ -256,9 +256,9 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/yaronschneider/dev/temp/icarus/src/Microsoft.Dapr.LogicApps.ExecutionEnvironment.csproj",
-      "projectName": "Microsoft.Dapr.LogicApps.ExecutionEnvironment",
-      "projectPath": "/Users/yaronschneider/dev/temp/icarus/src/Microsoft.Dapr.LogicApps.ExecutionEnvironment.csproj",
+      "projectUniqueName": "/Users/yaronschneider/dev/temp/icarus/src/Dapr.LogicApps.csproj",
+      "projectName": "Dapr.LogicApps",
+      "projectPath": "/Users/yaronschneider/dev/temp/icarus/src/Dapr.LogicApps.csproj",
       "packagesPath": "/Users/yaronschneider/.nuget/packages/",
       "outputPath": "/Users/yaronschneider/dev/temp/icarus/src/obj/",
       "projectStyle": "PackageReference",

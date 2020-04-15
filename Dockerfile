@@ -4,4 +4,4 @@ COPY bin/Release/netcoreapp3.1/publish/ app/
 COPY Resources.resx /app
 COPY ResponseLogicApp.json /
 
-ENTRYPOINT ["dotnet", "app/Microsoft.Dapr.LogicApps.ExecutionEnvironment.dll"]
+ENTRYPOINT ["dotnet", "app/Dapr.LogicApps.dll"]
