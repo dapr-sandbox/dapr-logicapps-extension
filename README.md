@@ -53,7 +53,7 @@ kubectl port-forward deploy/dapr-logicapps-host 3500:3500
 Now, invoke logic apps through Dapr:
 
 ```
-curl http://localhost:3500/v1.0/invoke/logicapps/method/workflow
+curl http://localhost:3500/v1.0/invoke/logicapps/method/ResponseLogicApp
 
 {"value":"Hello from LogicApp running in Dapr runtime"}                                                                                   
 ```
@@ -73,7 +73,9 @@ dapr init
 #### Invoke Logic Apps using Dapr
 
 ```
-dapr run --app-id logicapps --protocol grpc --app-port 50003  dotnet run
+dapr run --app-id logicapps --protocol grpc --app-port 50003 -- dotnet run ./example
+
+curl http://localhost:3500/v1.0/invoke/logicapps/method/ResponseLogicApp
 
 {"value":"Hello from LogicApp running in Dapr runtime"}                                                                                   
 ```

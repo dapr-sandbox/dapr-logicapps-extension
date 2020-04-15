@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Microsoft.Azure.Flow.Data.Configuration;
 using Microsoft.Azure.Flow.Worker;
 using Microsoft.Azure.Flow.Data.Extensions;
@@ -20,22 +21,31 @@ namespace Dapr.LogicApps
     class Program
     {
         const int ServerPort = 50003;
-        const string DefaultFlowName = "ResponseLogicApp";
+        const string WorkflowsPathArg = "--workflows-path";
 
         static void Main(string[] args)
         {
-            var flowName = Environment.GetEnvironmentVariable("FLOW_NAME");
-            if (string.IsNullOrEmpty(flowName)) {
-                flowName = DefaultFlowName;
+            // Load Workflows
+            if (!args.ToList().Any(d=> d == WorkflowsPathArg)) 
+            {
+                throw new ArgumentNullException($"missing {WorkflowsPathArg} argument");
+            }
+            var workflowPath = args[args.ToList().IndexOf(WorkflowsPathArg) +1];
+            if (string.IsNullOrEmpty(workflowPath))
+            {
+                throw new Exception($"{WorkflowsPathArg} cannot be empty");
             }
 
-            // Create Workflow
-            var flowConfig = WorkflowCreator.Create(flowName);
+            // Create engine
+            var workflowEngine = WorkflowCreator.CreateEngine();
+
+            // Load and register workflows
+            var workflows = WorkflowCreator.LoadWorkflows(workflowPath, workflowEngine.Engine);
 
             // Start and register Dapr gRPC app
             var server = new Server
             {
-                Services = { DaprClient.BindService(new DaprWorkflowExecutor(flowName, flowConfig)) },
+                Services = { DaprClient.BindService(new DaprWorkflowExecutor(workflows, workflowEngine)) },
                 Ports = { new ServerPort("localhost", ServerPort, ServerCredentials.Insecure) }
             };
 

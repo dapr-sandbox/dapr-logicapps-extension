@@ -34,19 +34,20 @@ using Daprclient;
 using System;
 using Google.Protobuf.WellKnownTypes;
 using Google.Protobuf;
+using Grpc.Core;
 
 namespace Dapr.LogicApps.Workflow
 {
     public class DaprWorkflowExecutor : DaprClient.DaprClientBase
     {
-        private EdgeFlowConfiguration config { get; set; }
-        private string flowName { get; set; }
+        private List<WorkflowConfig> workflows;
+        private WorkflowEngine workflowEngine;
         const string EventName = "workflowevent";
 
-        public DaprWorkflowExecutor(string name, EdgeFlowConfiguration config)
+        public DaprWorkflowExecutor(IEnumerable<WorkflowConfig> workflows, WorkflowEngine workflowEngine)
         {
-            this.flowName = name;
-            this.config = config;
+            this.workflows = workflows.ToList();
+            this.workflowEngine = workflowEngine;
         }
 
         public override Task<Empty> OnTopicEvent(CloudEventEnvelope request, Grpc.Core.ServerCallContext context)
@@ -57,12 +58,16 @@ namespace Dapr.LogicApps.Workflow
         public override Task<Any> OnInvoke(InvokeEnvelope request, Grpc.Core.ServerCallContext context)
         {
             Console.WriteLine("Invoking Workflow...");
-            
+            if (!this.workflows.Any(w => w.Name == request.Method))
+            {
+                throw new RpcException(new Status(StatusCode.InvalidArgument, $"Worflow with name {request.Method} was not found"));
+            }
+
             var any = new Any();
 
             try
             {
-                var response = CallWorkflow();
+                var response = CallWorkflow(request.Method);
                 any.Value = ByteString.CopyFromUtf8(response);
 
                 return Task.FromResult(any);
@@ -88,17 +93,16 @@ namespace Dapr.LogicApps.Workflow
 
         public override Task<BindingResponseEnvelope> OnBindingEvent(BindingEventEnvelope request, Grpc.Core.ServerCallContext context)
         {
-            var response = CallWorkflow();
+            var response = CallWorkflow("");
             Console.WriteLine(response);
 
             return Task.FromResult(new BindingResponseEnvelope());
         }
 
-        private string CallWorkflow()
+        private string CallWorkflow(string flowName)
         {
             var req = new HttpRequestMessage(HttpMethod.Get, "http://localhost/workflow");
-            var flowConfig = this.config;
-            var flowName = this.flowName;
+            var flowConfig = this.workflowEngine.Config;
 
             using (RequestCorrelationContext.Current.Initialize((string)null, (string)null, FlowConstants.PrivatePreview20190601ApiVersion, (string)null, (string)null, (string)null, (string)null, (string)null, (string)null, (string)null, (string)null))
             {

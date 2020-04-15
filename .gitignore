@@ -2,3 +2,4 @@ deploy/components
 .vscode
 bin/Debug
 bin/Release
+/obj/*
