@@ -208,7 +208,7 @@
     &lt;add key="Microsoft.Azure.Flow.Backend.HttpEngine.Common.RestrictedSubnets" value="" /&gt;
     &lt;add key="Microsoft.Azure.Flow.Backend.HttpEngine.Environment.RestrictedSubnets" value="" /&gt;
 
-    &lt;add key="Microsoft.Azure.Flow.FlowRegionalEndpointUri" value="http://localhost:9900"/&gt;
+    &lt;add key="Microsoft.Azure.Flow.FlowRegionalEndpointUri" value="http://localhost"/&gt;
     &lt;add key="Microsoft.Azure.Flow.FlowApiVersion" value="2015-02-01-preview"/&gt;
 
     &lt;add key="Microsoft.Azure.Flow.Frontend.AllowedHostnames" value="localhost" /&gt;
@@ -227,6 +227,8 @@
     &lt;add key="Microsoft.Azure.Flow.ShouldUseRedisNotificationChannel" value="false" /&gt;
 
     &lt;add key="Microsoft.Azure.Flow.AzureResourceDataProvider.ManagementEndpoint" value="http://localhost:111/"/&gt;
+    &lt;add key="Microsoft.Azure.Flow.Dmts.GlobalServiceBaseUri" value="http://localhost:301/"/&gt;
+    &lt;add key="Microsoft.Azure.Flow.Dmts.RegionalEndpoints" value="http://localhost:301/"/&gt;
 
     &lt;add key="Microsoft.Azure.Flow.AzureResourceDataProvider.Microsoft.Web.RequestTimeout" value="00:00:05"/&gt;
     &lt;add key="Microsoft.Azure.Flow.AzureResourceDataProvider.Microsoft.Web.RequestRetryCount" value="0"/&gt;
@@ -452,7 +454,7 @@
     &lt;add key="Microsoft.Azure.Flow.FlowDnsZoneManagementEngine.DnsZoneName" value="testdnszone" /&gt;
     &lt;add key="Microsoft.Azure.Flow.FlowDnsZoneManagementEngine.SubscriptionId" value="myedgeenvironment" /&gt;
     &lt;add key="Microsoft.Azure.Flow.FlowDnsZoneManagementEngine.ResourceGroup" value="testdnszoneresourcegroup" /&gt;
-
+    &lt;add key="Microsoft.Azure.Flow.SharedApiHub.ApiHubRPHostName" value="" /&gt;
   &lt;/appSettings&gt;
 &lt;/configuration&gt;
 </value>

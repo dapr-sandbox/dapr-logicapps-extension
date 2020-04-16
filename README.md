@@ -60,7 +60,7 @@ curl http://localhost:3500/v1.0/invoke/logicapps/method/ResponseLogicApp
 
 Rejoice!
 
-### Self hosted
+### Self hosted (running locally)
 
 #### Deploy Dapr
 
@@ -73,7 +73,7 @@ dapr init
 #### Invoke Logic Apps using Dapr
 
 ```
-dapr run --app-id logicapps --protocol grpc --app-port 50003 -- dotnet run ./example
+dapr run --app-id logicapps --protocol grpc --app-port 50003 -- dotnet run --workflows-path ./example
 
 curl http://localhost:3500/v1.0/invoke/logicapps/method/ResponseLogicApp
 

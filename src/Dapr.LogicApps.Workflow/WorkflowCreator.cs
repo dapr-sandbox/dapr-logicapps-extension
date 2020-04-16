@@ -13,33 +13,38 @@ using Newtonsoft.Json;
 using Microsoft.Azure.Flow.Common.Constants;
 using System.Threading;
 using Microsoft.Azure.Flow.Data.Engines;
+using Microsoft.Azure.Flow.Web.Common.Engines;
+using Microsoft.Azure.Flow.Web.Engines;
+using Microsoft.Azure.Flow.Data.Entities;
 
 namespace Dapr.LogicApps.Workflow
 {
     public class WorkflowEngine
     {
         public EdgeFlowConfiguration Config { get; set; }
-        public EdgeManagementEngine Engine { get; set; }
+        public EdgeFlowWebManagementEngine Engine { get; set; }
     }
 
     public class WorkflowConfig
     {
         public string Name { get; set; }
-        public WorkflowConfig(string name)
+        public FlowDefinition Definition { get; set; }
+        public WorkflowConfig(string name, FlowDefinition definition)
         {
             this.Name = name;
+            this.Definition = definition;
         }
     }
 
     public static class WorkflowCreator
     {
-        public static IEnumerable<WorkflowConfig> LoadWorkflows(string workflowsDir, EdgeManagementEngine engine)
+        public static IEnumerable<WorkflowConfig> LoadWorkflows(string workflowsDir, EdgeFlowWebManagementEngine engine)
         {
             if (!Directory.Exists(workflowsDir))
             {
                 throw new DirectoryNotFoundException($"Couldn't find workflow directory {workflowsDir}");
             }
-
+            
             foreach (var file in Directory.EnumerateFiles(workflowsDir))
             {
                 var fi = new FileInfo(file);
@@ -51,10 +56,10 @@ namespace Dapr.LogicApps.Workflow
                 def.Properties = workflowDef;
 
                 var flowName = Path.GetFileNameWithoutExtension(fi.FullName);
-                var response = engine.CreateFlow(flowName, def, CancellationToken.None).Result;
-                Console.WriteLine("Flow Created: " + response.Id);
+                engine.ValidateAndCreateFlow(flowName, def.Properties).Wait();
+                Console.WriteLine("Flow Created");
 
-                yield return new WorkflowConfig(flowName);
+                yield return new WorkflowConfig(flowName, def);
             }
         }
 
@@ -66,11 +71,9 @@ namespace Dapr.LogicApps.Workflow
             Console.WriteLine("Creating Edge Configuration");
             var flowConfig = new EdgeFlowConfiguration();
             flowConfig.Initialize().Wait();
-
-            Console.WriteLine("Registering Edge Environment");
-            var dispatcher = (FlowJobsDispatcher)new EdgeFlowJobsDispatcher(flowConfig, new System.Web.Http.HttpConfiguration(), null);
-            var engine = dispatcher.GetEdgeManagementEngine();
-            engine.RegisterEdgeEnvironment().Wait();
+                        
+            Console.WriteLine("Registering Web Environment");
+            var engine = new EdgeFlowWebManagementEngine(flowConfig, new System.Web.Http.HttpConfiguration());
 
             return new WorkflowEngine()
             {

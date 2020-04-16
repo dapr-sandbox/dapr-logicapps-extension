@@ -4,76 +4,6 @@
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
-  <ItemGroup>
-  <Reference Include="Microsoft.Azure.Flow.Common.Edge">
-    <HintPath>bin/Microsoft.Azure.Flow.Common.Edge.dll</HintPath>
-  </Reference>
-</ItemGroup>
-<ItemGroup>
-  <Reference Include="Microsoft.Azure.Flow.Data.Common.Edge">
-    <HintPath>bin/Microsoft.Azure.Flow.Data.Common.Edge.dll</HintPath>
-  </Reference>
-</ItemGroup>
-<ItemGroup>
-  <Reference Include="Microsoft.Azure.Flow.Data.Edge">
-    <HintPath>bin/Microsoft.Azure.Flow.Data.Edge.dll</HintPath>
-  </Reference>
-</ItemGroup>
-<ItemGroup>
-  <Reference Include="Microsoft.Azure.Flow.EventSource.Common.Edge">
-    <HintPath>bin/Microsoft.Azure.Flow.EventSource.Common.Edge.dll</HintPath>
-  </Reference>
-</ItemGroup>
-<ItemGroup>
-  <Reference Include="Microsoft.Azure.Flow.EventSource.Edge">
-    <HintPath>bin/Microsoft.Azure.Flow.EventSource.Edge.dll</HintPath>
-  </Reference>
-</ItemGroup>
-<ItemGroup>
-  <Reference Include="Microsoft.Azure.Flow.ServiceModel.Core">
-    <HintPath>bin/Microsoft.Azure.Flow.ServiceModel.Core.dll</HintPath>
-  </Reference>
-</ItemGroup>
-<ItemGroup>
-  <Reference Include="Microsoft.Azure.Flow.Templates.Edge">
-    <HintPath>bin/Microsoft.Azure.Flow.Templates.Edge.dll</HintPath>
-  </Reference>
-</ItemGroup>
-<ItemGroup>
-  <Reference Include="Microsoft.Azure.Flow.Templates.Upgrade.Edge">
-    <HintPath>bin/Microsoft.Azure.Flow.Templates.Upgrade.Edge.dll</HintPath>
-  </Reference>
-</ItemGroup>
-<ItemGroup>
-  <Reference Include="Microsoft.Azure.Flow.Web.Common.Edge">
-    <HintPath>bin/Microsoft.Azure.Flow.Web.Common.Edge.dll</HintPath>
-  </Reference>
-</ItemGroup>
-<ItemGroup>
-  <Reference Include="Microsoft.Azure.Flow.Web.Http.Core">
-    <HintPath>bin/Microsoft.Azure.Flow.Web.Http.Core.dll</HintPath>
-  </Reference>
-</ItemGroup>
-<ItemGroup>
-  <Reference Include="Microsoft.Azure.Flow.Worker.Common.Edge">
-    <HintPath>bin/Microsoft.Azure.Flow.Worker.Common.Edge.dll</HintPath>
-  </Reference>
-</ItemGroup>
-<ItemGroup>
-  <Reference Include="Microsoft.Azure.Flow.Worker.Edge">
-    <HintPath>bin/Microsoft.Azure.Flow.Worker.Edge.dll</HintPath>
-  </Reference>
-</ItemGroup>
-<ItemGroup>
-  <Reference Include="Microsoft.WindowsAzure.ResourceStack">
-    <HintPath>bin/Microsoft.WindowsAzure.ResourceStack.dll</HintPath>
-  </Reference>
-</ItemGroup>
-<ItemGroup>
-  <Reference Include="Newtonsoft.Json">
-    <HintPath>bin/Newtonsoft.Json.dll</HintPath>
-  </Reference>
-</ItemGroup>
 <ItemGroup>
   <PackageReference Include="Google.Protobuf" Version="3.11.4" />
   <PackageReference Include="Grpc" Version="2.27.0" />
@@ -81,6 +11,8 @@
     <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     <PrivateAssets>all</PrivateAssets>
   </PackageReference>
+  <PackageReference Include="Microsoft.Azure.Flow.Worker.Edge" Version="1.0.0.10353" />
+  <PackageReference Include="Microsoft.Azure.Flow.Web.Edge" Version="1.0.0.10353" />
 </ItemGroup>
  <ItemGroup>
     <Protobuf Include="**/*.proto" />

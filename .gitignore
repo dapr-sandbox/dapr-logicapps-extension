@@ -3,3 +3,4 @@ deploy/components
 bin/Debug
 bin/Release
 /obj/*
+/bin/*
