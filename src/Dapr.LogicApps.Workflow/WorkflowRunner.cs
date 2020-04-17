@@ -34,6 +34,7 @@ using System;
 using Google.Protobuf.WellKnownTypes;
 using Google.Protobuf;
 using Grpc.Core;
+using System.Diagnostics;
 
 namespace Dapr.LogicApps.Workflow
 {
@@ -113,13 +114,15 @@ namespace Dapr.LogicApps.Workflow
             var flowConfig = this.workflowEngine.Config;
             var flowName = workflow.Name;
 
+            flowConfig.FlowEdgeEnvironmentEndpointUri = new Uri("http://localhost");
+
             using (RequestCorrelationContext.Current.Initialize(apiVersion: FlowConstants.PrivatePreview20190601ApiVersion))
             {
                 var flow = FindExistingFlow(workflow.Name).Result;
                 var triggerName = flow.Definition.Triggers.Keys.Single();
                 var trigger = flow.Definition.GetTrigger(triggerName);
 
-                var ct = new CancellationToken();
+                var ct = CancellationToken.None;
 
                 if (trigger.IsFlowRecurrentTrigger() || trigger.IsNotificationTrigger())
                 {
@@ -133,7 +136,6 @@ namespace Dapr.LogicApps.Workflow
                 else
                 {
                     var triggerOutput = this.workflowEngine.Engine.GetFlowHttpEngine().GetOperationOutput(req, flowConfig.EventSource, ct).Result;
-
                     var resp = this.workflowEngine.Engine
                                                 .RunFlowPushTrigger(
                                                     request: req,
@@ -146,7 +148,8 @@ namespace Dapr.LogicApps.Workflow
                                                     triggerOutput: triggerOutput,
                                                     clientCancellationToken: ct)
                                                 .Result;
-
+                    Console.WriteLine(resp.StatusCode);
+                    Trace.Flush();
                     return resp.Content.ReadAsStringAsync().Result;
                 }
             }

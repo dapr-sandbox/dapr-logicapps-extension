@@ -58,7 +58,6 @@ namespace Dapr.LogicApps.Workflow
                 var flowName = Path.GetFileNameWithoutExtension(fi.FullName);
                 engine.ValidateAndCreateFlow(flowName, def.Properties).Wait();
                 Console.WriteLine("Flow Created");
-
                 yield return new WorkflowConfig(flowName, def);
             }
         }

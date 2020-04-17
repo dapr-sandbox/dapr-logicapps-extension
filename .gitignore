@@ -4,3 +4,5 @@ bin/Debug
 bin/Release
 /obj/*
 /bin/*
+/components/*
+IcarusOutput.log

@@ -15,6 +15,7 @@ using Grpc.Core;
 using System.Threading.Tasks;
 using Dapr.LogicApps.Workflow;
 using Dapr.LogicApps.Configuration;
+using System.Diagnostics;
 
 namespace Dapr.LogicApps
 {
@@ -25,6 +26,8 @@ namespace Dapr.LogicApps
 
         static void Main(string[] args)
         {
+            Trace.Listeners.Add(new TextWriterTraceListener("IcarusOutput.log", "icarusListener"));
+            
             // Load Workflows
             if (!args.ToList().Any(d=> d == WorkflowsPathArg)) 
             {
