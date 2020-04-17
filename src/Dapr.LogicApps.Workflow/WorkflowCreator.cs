@@ -16,6 +16,7 @@ using Microsoft.Azure.Flow.Data.Engines;
 using Microsoft.Azure.Flow.Web.Common.Engines;
 using Microsoft.Azure.Flow.Web.Engines;
 using Microsoft.Azure.Flow.Data.Entities;
+using Microsoft.Azure.Flow.Common.Extensions;
 
 namespace Dapr.LogicApps.Workflow
 {
@@ -44,7 +45,7 @@ namespace Dapr.LogicApps.Workflow
             {
                 throw new DirectoryNotFoundException($"Couldn't find workflow directory {workflowsDir}");
             }
-            
+
             foreach (var file in Directory.EnumerateFiles(workflowsDir))
             {
                 var fi = new FileInfo(file);
@@ -70,9 +71,25 @@ namespace Dapr.LogicApps.Workflow
             Console.WriteLine("Creating Edge Configuration");
             var flowConfig = new EdgeFlowConfiguration();
             flowConfig.Initialize().Wait();
-                        
+            flowConfig.EnsureInitialized();
+
+            var httpConfig = new System.Web.Http.HttpConfiguration();
+            httpConfig.Formatters = new System.Net.Http.Formatting.MediaTypeFormatterCollection();
+            httpConfig.Formatters.Add(FlowJsonExtensions.JsonMediaTypeFormatter);
+
+            var edgeEngine = new EdgeManagementEngine(flowConfig, httpConfig);
+            edgeEngine.RegisterEdgeEnvironment().Wait();
+
+            var dispatcher = new EdgeFlowJobsDispatcher(
+                flowConfiguration: flowConfig,
+                httpConfiguration: httpConfig,
+                requestPipeline: null);
+
+            dispatcher.Start();
+            dispatcher.ProvisionSystemJobs();
+
             Console.WriteLine("Registering Web Environment");
-            var engine = new EdgeFlowWebManagementEngine(flowConfig, new System.Web.Http.HttpConfiguration());
+            var engine = new EdgeFlowWebManagementEngine(flowConfig, httpConfig);
 
             return new WorkflowEngine()
             {

@@ -4,12 +4,8 @@
     "actions": {
       "Compose": {
         "type": "compose",
-        "runAfter": {
-         
-        },
-        "inputs": {
-          "body": "Hello from Logic Apps running with Dapr!"
-        }
+        "runAfter": {},
+        "inputs": { "body": "Hello from LogicApp running in Dapr runtime" }
       },
       "Response": {
         "inputs": {
@@ -18,35 +14,24 @@
           },
           "statusCode": 200
         },
-        "runAfter": {
-          "Compose": [
-            "Succeeded"
-          ]
-        },
+        "runAfter": { "Compose": [ "Succeeded" ] },
         "type": "Response"
       }
     },
     "contentVersion": "1.0.0.0",
-    "outputs": {
-     
-    },
-    "parameters": {
-     
-    },
+    "outputs": {},
+    "parameters": {},
     "triggers": {
       "manual": {
         "inputs": {
-          "schema": {
-          }
+          "schema": {}
         },
         "kind": "Http",
         "type": "Request"
       }
     }
   },
-  "parameters": {
-   
-  },
+  "parameters": {},
   "runtimeConfiguration": {
     "operationOptions": "OptimizedForHighThroughput"
   }
