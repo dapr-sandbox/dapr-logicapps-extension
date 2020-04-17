@@ -35,6 +35,7 @@ using Google.Protobuf.WellKnownTypes;
 using Google.Protobuf;
 using Grpc.Core;
 using System.Diagnostics;
+using Microsoft.Azure.Flow.Data;
 
 namespace Dapr.LogicApps.Workflow
 {
@@ -139,7 +140,7 @@ namespace Dapr.LogicApps.Workflow
                     var resp = this.workflowEngine.Engine
                                                 .RunFlowPushTrigger(
                                                     request: req,
-                                                    flow: flow,
+                                                    context: new FlowDataPlaneContext(flow),
                                                     trigger: trigger,
                                                     subscriptionId: EdgeFlowConfiguration.EdgeSubscriptionId,
                                                     resourceGroup: EdgeFlowConfiguration.EdgeResourceGroupName,

@@ -11,8 +11,8 @@
     <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     <PrivateAssets>all</PrivateAssets>
   </PackageReference>
-  <PackageReference Include="Microsoft.Azure.Flow.Worker.Edge" Version="1.0.0.10353" />
-  <PackageReference Include="Microsoft.Azure.Flow.Web.Edge" Version="1.0.0.10353" />
+  <PackageReference Include="Microsoft.Azure.Flow.Worker.Edge" Version="1.0.0.10384" />
+  <PackageReference Include="Microsoft.Azure.Flow.Web.Edge" Version="1.0.0.10384" />
 </ItemGroup>
  <ItemGroup>
     <Protobuf Include="**/*.proto" />
