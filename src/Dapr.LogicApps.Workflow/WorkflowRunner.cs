@@ -170,11 +170,4 @@ namespace Dapr.LogicApps.Workflow
             }
         }
     }
-
-    public class ConfigHolder : IFlowConfigurationHolder
-    {
-        public FlowConfiguration FlowConfiguration { get; set; }
-
-        public HttpConfiguration HttpConfiguration { get; set; }
-    }
 }
