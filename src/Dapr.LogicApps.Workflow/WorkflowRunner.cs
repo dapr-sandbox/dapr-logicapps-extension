@@ -43,7 +43,7 @@ namespace Dapr.LogicApps.Workflow
     {
         private List<WorkflowConfig> workflows;
         private WorkflowEngine workflowEngine;
-        
+
         public DaprWorkflowExecutor(IEnumerable<WorkflowConfig> workflows, WorkflowEngine workflowEngine)
         {
             this.workflows = workflows.ToList();
@@ -55,14 +55,14 @@ namespace Dapr.LogicApps.Workflow
             return Task.FromResult(new Empty());
         }
 
-        public override Task<Any> OnInvoke(InvokeEnvelope request, Grpc.Core.ServerCallContext context)
+        public async override Task<Any> OnInvoke(InvokeEnvelope request, Grpc.Core.ServerCallContext context)
         {
             if (!WorkflowExists(request.Method))
             {
                 throw new RpcException(new Status(StatusCode.InvalidArgument, $"Worflow with name {request.Method} was not found"));
 
             }
-            return Task.FromResult(ExecuteWorkflow(request.Method).Result);
+            return await ExecuteWorkflow(request.Method);
         }
 
         private bool WorkflowExists(string name)
@@ -70,17 +70,17 @@ namespace Dapr.LogicApps.Workflow
             return this.workflows.Any(w => w.Name == name);
         }
 
-        private Task<Any> ExecuteWorkflow(string name)
+        private async Task<Any> ExecuteWorkflow(string name)
         {
             Console.WriteLine("Invoking Workflow...");
 
             var any = new Any();
 
             var workflowConfig = this.workflows.First(w => w.Name == name);
-            var response = CallWorkflow(workflowConfig);
+            var response = await CallWorkflow(workflowConfig);
             any.Value = ByteString.CopyFromUtf8(response);
 
-            return Task.FromResult(any);
+            return any;
         }
 
         public override Task<GetTopicSubscriptionsEnvelope> GetTopicSubscriptions(Empty request, Grpc.Core.ServerCallContext context)
@@ -98,25 +98,25 @@ namespace Dapr.LogicApps.Workflow
             return Task.FromResult(envelope);
         }
 
-        public override Task<BindingResponseEnvelope> OnBindingEvent(BindingEventEnvelope request, Grpc.Core.ServerCallContext context)
+        public async override Task<BindingResponseEnvelope> OnBindingEvent(BindingEventEnvelope request, Grpc.Core.ServerCallContext context)
         {
             if (!WorkflowExists(request.Name))
             {
                 throw new RpcException(new Status(StatusCode.InvalidArgument, $"Worflow with name {request.Name} was not found"));
 
             }
-            var response = ExecuteWorkflow(request.Name).Result;
-            return Task.FromResult(new BindingResponseEnvelope() { Data = response });
+            var response = await ExecuteWorkflow(request.Name);
+            return new BindingResponseEnvelope() { Data = response };
         }
 
-        private Task<Flow> FindExistingFlow(string flowName)
+        private async Task<Flow> FindExistingFlow(string flowName)
         {
-            return this.workflowEngine.Engine
+            return await this.workflowEngine.Engine
                 .GetRegionalDataProvider()
                 .FindFlowByName(subscriptionId: EdgeFlowConfiguration.EdgeSubscriptionId, resourceGroup: EdgeFlowConfiguration.EdgeResourceGroupName, flowName: flowName);
         }
 
-        private string CallWorkflow(WorkflowConfig workflow)
+        private async Task<string> CallWorkflow(WorkflowConfig workflow)
         {
             var req = new HttpRequestMessage(HttpMethod.Get, "http://localhost/workflow");
             var flowConfig = this.workflowEngine.Config;
@@ -134,7 +134,7 @@ namespace Dapr.LogicApps.Workflow
                 clientRequestIdentity.AuthorizeRequest(RequestAuthorizationSource.Direct);
                 RequestCorrelationContext.Current.SetAuthenticationIdentity(clientRequestIdentity);
 
-                var flow = FindExistingFlow(workflow.Name).Result;
+                var flow = await FindExistingFlow(workflow.Name);
                 var triggerName = flow.Definition.Triggers.Keys.Single();
                 var trigger = flow.Definition.GetTrigger(triggerName);
 
@@ -142,17 +142,17 @@ namespace Dapr.LogicApps.Workflow
 
                 if (trigger.IsFlowRecurrentTrigger() || trigger.IsNotificationTrigger())
                 {
-                    this.workflowEngine.Engine
+                    await this.workflowEngine.Engine
                         .RunFlowRecurrentTrigger(
                             flow: flow,
                             flowName: flowName,
-                            triggerName: triggerName).Wait();
+                            triggerName: triggerName);
                     return "";
                 }
                 else
                 {
                     var triggerOutput = this.workflowEngine.Engine.GetFlowHttpEngine().GetOperationOutput(req, flowConfig.EventSource, ct).Result;
-                    var resp = this.workflowEngine.Engine
+                    var resp = await this.workflowEngine.Engine
                                                 .RunFlowPushTrigger(
                                                     request: req,
                                                     context: new FlowDataPlaneContext(flow),
@@ -162,9 +162,8 @@ namespace Dapr.LogicApps.Workflow
                                                     flowName: flowName,
                                                     triggerName: triggerName,
                                                     triggerOutput: triggerOutput,
-                                                    clientCancellationToken: ct)
-                                                .Result;
-                    return resp.Content.ReadAsStringAsync().Result;
+                                                    clientCancellationToken: ct);
+                    return await resp.Content.ReadAsStringAsync();
                 }
             }
         }
