@@ -43,8 +43,7 @@ namespace Dapr.LogicApps.Workflow
     {
         private List<WorkflowConfig> workflows;
         private WorkflowEngine workflowEngine;
-        const string EventName = "workflowevent";
-
+        
         public DaprWorkflowExecutor(IEnumerable<WorkflowConfig> workflows, WorkflowEngine workflowEngine)
         {
             this.workflows = workflows.ToList();
