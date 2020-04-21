@@ -129,7 +129,7 @@
     &lt;add key="Microsoft.Azure.Flow.IsEdgeEnvironment" value="true" /&gt;
     &lt;add key="Microsoft.Azure.Flow.EdgeEnvironment.EnvironmentName" value="myedgeenvironment" /&gt;
     &lt;add key="Microsoft.Azure.Flow.EdgeEnvironment.ResourceGroup" value="myedgeresourcegroup" /&gt;
-    &lt;add key="Microsoft.Azure.Flow.EdgeEnvironment.LogLevel" value="Info" /&gt;
+    &lt;add key="Microsoft.Azure.Flow.EdgeEnvironment.LogLevel" value="Error" /&gt;
     &lt;add key="Microsoft.Azure.Flow.EdgeEnvironment.ServiceName" value="Flow.Worker" /&gt;
     &lt;add key="Microsoft.Azure.Flow.EdgeApiRuntimeUrl.FileSystem" value="http://filesystemconnector:80" /&gt;
     &lt;add key="Microsoft.Azure.Flow.EdgeApiRuntimeUrl.Sql" value="http://sqlconnector:80" /&gt;

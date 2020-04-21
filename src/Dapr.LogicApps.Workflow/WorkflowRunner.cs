@@ -58,28 +58,30 @@ namespace Dapr.LogicApps.Workflow
 
         public override Task<Any> OnInvoke(InvokeEnvelope request, Grpc.Core.ServerCallContext context)
         {
-            Console.WriteLine("Invoking Workflow...");
-            if (!this.workflows.Any(w => w.Name == request.Method))
+            if (!WorkflowExists(request.Method))
             {
                 throw new RpcException(new Status(StatusCode.InvalidArgument, $"Worflow with name {request.Method} was not found"));
+
             }
+            return Task.FromResult(ExecuteWorkflow(request.Method).Result);
+        }
+
+        private bool WorkflowExists(string name)
+        {
+            return this.workflows.Any(w => w.Name == name);
+        }
+
+        private Task<Any> ExecuteWorkflow(string name)
+        {
+            Console.WriteLine("Invoking Workflow...");
 
             var any = new Any();
 
-            try
-            {
-                var workflowConfig = this.workflows.First(w => w.Name == request.Method);
-                var response = CallWorkflow(workflowConfig);
-                any.Value = ByteString.CopyFromUtf8(response);
+            var workflowConfig = this.workflows.First(w => w.Name == name);
+            var response = CallWorkflow(workflowConfig);
+            any.Value = ByteString.CopyFromUtf8(response);
 
-                return Task.FromResult(any);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.InnerException.Message);
-                Console.WriteLine(ex.InnerException.StackTrace);
-                return Task.FromResult(any);
-            }
+            return Task.FromResult(any);
         }
 
         public override Task<GetTopicSubscriptionsEnvelope> GetTopicSubscriptions(Empty request, Grpc.Core.ServerCallContext context)
@@ -90,16 +92,22 @@ namespace Dapr.LogicApps.Workflow
         public override Task<GetBindingsSubscriptionsEnvelope> GetBindingsSubscriptions(Empty request, Grpc.Core.ServerCallContext context)
         {
             var envelope = new GetBindingsSubscriptionsEnvelope();
-            envelope.Bindings.Add(EventName);
+            this.workflows.ForEach(w =>
+            {
+                envelope.Bindings.Add(w.Name);
+            });
             return Task.FromResult(envelope);
         }
 
         public override Task<BindingResponseEnvelope> OnBindingEvent(BindingEventEnvelope request, Grpc.Core.ServerCallContext context)
         {
-            var response = CallWorkflow(null);
-            Console.WriteLine(response);
+            if (!WorkflowExists(request.Name))
+            {
+                throw new RpcException(new Status(StatusCode.InvalidArgument, $"Worflow with name {request.Name} was not found"));
 
-            return Task.FromResult(new BindingResponseEnvelope());
+            }
+            var response = ExecuteWorkflow(request.Name).Result;
+            return Task.FromResult(new BindingResponseEnvelope() { Data = response });
         }
 
         private Task<Flow> FindExistingFlow(string flowName)
@@ -126,7 +134,7 @@ namespace Dapr.LogicApps.Workflow
                 };
                 clientRequestIdentity.AuthorizeRequest(RequestAuthorizationSource.Direct);
                 RequestCorrelationContext.Current.SetAuthenticationIdentity(clientRequestIdentity);
-                
+
                 var flow = FindExistingFlow(workflow.Name).Result;
                 var triggerName = flow.Definition.Triggers.Keys.Single();
                 var trigger = flow.Definition.GetTrigger(triggerName);
@@ -157,8 +165,6 @@ namespace Dapr.LogicApps.Workflow
                                                     triggerOutput: triggerOutput,
                                                     clientCancellationToken: ct)
                                                 .Result;
-                    Console.WriteLine(resp.StatusCode);
-                    Trace.Flush();
                     return resp.Content.ReadAsStringAsync().Result;
                 }
             }

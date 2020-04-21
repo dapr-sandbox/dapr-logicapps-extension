@@ -25,9 +25,7 @@ namespace Dapr.LogicApps
         const string WorkflowsPathArg = "--workflows-path";
 
         static void Main(string[] args)
-        {
-            Trace.Listeners.Add(new TextWriterTraceListener("IcarusOutput.log", "icarusListener"));
-            
+        {            
             // Load Workflows
             if (!args.ToList().Any(d=> d == WorkflowsPathArg)) 
             {
