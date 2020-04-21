@@ -119,6 +119,14 @@ namespace Dapr.LogicApps.Workflow
 
             using (RequestCorrelationContext.Current.Initialize(apiVersion: FlowConstants.PrivatePreview20190601ApiVersion))
             {
+                var clientRequestIdentity = new RequestIdentity
+                {
+                    Claims = new Dictionary<string, string>(),
+                    IsAuthenticated = true,
+                };
+                clientRequestIdentity.AuthorizeRequest(RequestAuthorizationSource.Direct);
+                RequestCorrelationContext.Current.SetAuthenticationIdentity(clientRequestIdentity);
+                
                 var flow = FindExistingFlow(workflow.Name).Result;
                 var triggerName = flow.Definition.Triggers.Keys.Single();
                 var trigger = flow.Definition.GetTrigger(triggerName);
