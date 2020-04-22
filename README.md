@@ -123,7 +123,7 @@ Make sure you have Docker installed on your machine.
 Compile to release mode:
 
 ```
-dotnet publish -c Release 
+dotnet publish -c Release -r linux-x64 --self-contained false
 ```
 
 Build image:
