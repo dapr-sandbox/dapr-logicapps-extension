@@ -22,6 +22,8 @@ spec:
       containers:
       - name: host
         image: yaron2/logicapps2
+        command: ["dotnet"]
+        args: ["app/Dapr.LogicApps.dll", "--workflows-path", "/workflows"]
         ports:
         - containerPort: 50003
         imagePullPolicy: Always
@@ -31,4 +33,4 @@ spec:
       volumes:
         - name: workflows
           configMap:
-            name: workflows
+            name: logicapps
