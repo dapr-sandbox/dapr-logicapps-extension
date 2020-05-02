@@ -1,9 +1,7 @@
 using System.Threading.Tasks;
-using Microsoft.Azure.Flow.Data.Engines;
 using System.Net.Http;
 using Microsoft.Azure.Flow.Data.Entities;
 using Microsoft.Azure.Flow.Templates.Extensions;
-using System.Web.Http;
 using System.Linq;
 using Microsoft.Azure.Flow.Data.Configuration;
 using System.Threading;
@@ -57,10 +55,17 @@ namespace Dapr.LogicApps.Workflow
 
             var any = new Any();
 
-            var workflowConfig = this.workflows.First(w => w.Name == name);
-            var response = await CallWorkflow(workflowConfig);
-            any.Value = ByteString.CopyFromUtf8(response);
-
+            try
+            {
+                var workflowConfig = this.workflows.First(w => w.Name == name);
+                var response = await CallWorkflow(workflowConfig);
+                any.Value = ByteString.CopyFromUtf8(response);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.InnerException.Message);
+            }
             return any;
         }
 
@@ -87,6 +92,8 @@ namespace Dapr.LogicApps.Workflow
 
             }
             var response = await ExecuteWorkflow(request.Name);
+            Console.WriteLine(response.Value.ToStringUtf8());
+
             return new BindingResponseEnvelope() { Data = response };
         }
 
