@@ -51,8 +51,6 @@ namespace Dapr.LogicApps.Workflow
 
         private async Task<Any> ExecuteWorkflow(string name)
         {
-            Console.WriteLine("Invoking Workflow...");
-
             var any = new Any();
 
             try

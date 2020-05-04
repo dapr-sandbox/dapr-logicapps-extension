@@ -63,7 +63,7 @@ namespace Dapr.LogicApps.Workflow
             CloudConfigurationManager.Instance = (IConfigurationManager)new FlowConfigurationManager();
 
             Console.WriteLine("Creating Edge Configuration");
-            var flowConfig = new EdgeFlowConfiguration();
+            var flowConfig = new EdgeFlowConfiguration(CloudConfigurationManager.Instance as Microsoft.WindowsAzure.ResourceStack.Common.Services.AzureConfigurationManager);
             flowConfig.Initialize().Wait();
             flowConfig.EnsureInitialized();
 

@@ -33,7 +33,7 @@ Wait until the Dapr pods have the status `Running`.
 #### Create a Config Map for the workflow
 
 ```
-kubectl create configmap logicapps --from-file ResponseLogicApp.json
+kubectl create configmap logicapps --from-file workflow1.json
 ```
 
 #### Deploy Icarus
@@ -53,9 +53,9 @@ kubectl port-forward deploy/dapr-logicapps-host 3500:3500
 Now, invoke logic apps through Dapr:
 
 ```
-curl http://localhost:3500/v1.0/invoke/logicapps/method/ResponseLogicApp
+curl http://localhost:3500/v1.0/invoke/logicapps/method/workflow1
 
-{"value":"Hello from LogicApp running in Dapr runtime"}                                                                                   
+{"value":"Hello from Logic App workflow running with Dapr!"}                                                                                   
 ```
 
 Rejoice!
@@ -75,9 +75,9 @@ dapr init
 ```
 dapr run --app-id logicapps --protocol grpc --app-port 50003 -- dotnet run --workflows-path ./example
 
-curl http://localhost:3500/v1.0/invoke/logicapps/method/ResponseLogicApp
+curl http://localhost:3500/v1.0/invoke/logicapps/method/workflow1
 
-{"value":"Hello from LogicApp running in Dapr runtime"}                                                                                   
+{"value":"Hello from Logic App workflow running with Dapr!"}                                                                                   
 ```
 
 Rejoice once more!
