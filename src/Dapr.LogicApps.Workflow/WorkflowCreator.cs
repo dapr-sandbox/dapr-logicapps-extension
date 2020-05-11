@@ -2,15 +2,15 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 using Dapr.LogicApps.Configuration;
-using Microsoft.Azure.Flow.Data.Configuration;
-using Microsoft.Azure.Flow.Data.Definitions;
-using Microsoft.Azure.Flow.Worker;
+using Microsoft.Azure.Workflows.Data.Configuration;
+using Microsoft.Azure.Workflows.Data.Definitions;
+using Microsoft.Azure.Workflows.Worker;
 using Microsoft.WindowsAzure.ResourceStack.Common.Services;
 using Newtonsoft.Json;
-using Microsoft.Azure.Flow.Common.Constants;
-using Microsoft.Azure.Flow.Data.Engines;
-using Microsoft.Azure.Flow.Web.Engines;
-using Microsoft.Azure.Flow.Common.Extensions;
+using Microsoft.Azure.Workflows.Common.Constants;
+using Microsoft.Azure.Workflows.Data.Engines;
+using Microsoft.Azure.Workflows.Web.Engines;
+using Microsoft.Azure.Workflows.Common.Extensions;
 
 namespace Dapr.LogicApps.Workflow
 {

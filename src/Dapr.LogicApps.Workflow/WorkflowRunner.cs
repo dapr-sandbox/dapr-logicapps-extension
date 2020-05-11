@@ -1,11 +1,11 @@
 using System.Threading.Tasks;
 using System.Net.Http;
-using Microsoft.Azure.Flow.Data.Entities;
-using Microsoft.Azure.Flow.Templates.Extensions;
+using Microsoft.Azure.Workflows.Data.Entities;
+using Microsoft.Azure.Workflows.Templates.Extensions;
 using System.Linq;
-using Microsoft.Azure.Flow.Data.Configuration;
+using Microsoft.Azure.Workflows.Data.Configuration;
 using System.Threading;
-using Microsoft.Azure.Flow.Common.Constants;
+using Microsoft.Azure.Workflows.Common.Constants;
 using Microsoft.WindowsAzure.ResourceStack.Common.Extensions;
 using Microsoft.WindowsAzure.ResourceStack.Common.Instrumentation;
 using System.Collections.Generic;
@@ -14,7 +14,7 @@ using System;
 using Google.Protobuf.WellKnownTypes;
 using Google.Protobuf;
 using Grpc.Core;
-using Microsoft.Azure.Flow.Data;
+using Microsoft.Azure.Workflows.Data;
 
 namespace Dapr.LogicApps.Workflow
 {

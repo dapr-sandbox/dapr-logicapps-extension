@@ -31,8 +31,7 @@
       }
     }
   },
-  "parameters": {},
   "runtimeConfiguration": {
-    "operationOptions": "OptimizedForHighThroughput"
+    "operationOptions": "WithStatelessRunHistory"
   }
 }
