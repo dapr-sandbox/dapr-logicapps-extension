@@ -114,7 +114,7 @@ namespace Dapr.LogicApps.Workflow
 
             flowConfig.FlowEdgeEnvironmentEndpointUri = new Uri("http://localhost");
 
-            using (RequestCorrelationContext.Current.Initialize(apiVersion: FlowConstants.PrivatePreview20190601ApiVersion))
+            using (RequestCorrelationContext.Current.Initialize(apiVersion: FlowConstants.PrivatePreview20190601ApiVersion, localizationLanguage: "en-us"))
             {
                 var clientRequestIdentity = new RequestIdentity
                 {
