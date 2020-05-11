@@ -9,12 +9,12 @@ using Microsoft.Azure.Workflows.Common.Constants;
 using Microsoft.WindowsAzure.ResourceStack.Common.Extensions;
 using Microsoft.WindowsAzure.ResourceStack.Common.Instrumentation;
 using System.Collections.Generic;
-using Daprclient;
 using System;
 using Google.Protobuf.WellKnownTypes;
 using Google.Protobuf;
 using Grpc.Core;
 using Microsoft.Azure.Workflows.Data;
+using Dapr.Client.Autogen.Grpc.v1;
 
 namespace Dapr.LogicApps.Workflow
 {
@@ -34,14 +34,18 @@ namespace Dapr.LogicApps.Workflow
             return Task.FromResult(new Empty());
         }
 
-        public async override Task<Any> OnInvoke(InvokeEnvelope request, Grpc.Core.ServerCallContext context)
+        public async override Task<InvokeResponse> OnInvoke(InvokeRequest request, Grpc.Core.ServerCallContext context)
         {
             if (!WorkflowExists(request.Method))
             {
                 throw new RpcException(new Status(StatusCode.InvalidArgument, $"Worflow with name {request.Method} was not found"));
 
             }
-            return await ExecuteWorkflow(request.Method);
+            var resp = await ExecuteWorkflow(request.Method);
+            return new InvokeResponse()
+            {
+                Data = resp,
+            };
         }
 
         private bool WorkflowExists(string name)

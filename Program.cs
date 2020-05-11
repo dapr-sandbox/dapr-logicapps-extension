@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Linq;
 using System.Threading;
-using Daprclient;
 using Grpc.Core;
 using System.Threading.Tasks;
 using Dapr.LogicApps.Workflow;
+using Dapr.Client.Autogen.Grpc.v1;
 
 namespace Dapr.LogicApps
 {
