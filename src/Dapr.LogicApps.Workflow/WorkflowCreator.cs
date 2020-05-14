@@ -11,6 +11,8 @@ using Microsoft.Azure.Workflows.Common.Constants;
 using Microsoft.Azure.Workflows.Data.Engines;
 using Microsoft.Azure.Workflows.Web.Engines;
 using Microsoft.Azure.Workflows.Common.Extensions;
+using Microsoft.Azure.Workflows.Worker.Jobs;
+using Microsoft.Azure.Workflows.Worker.Dispatcher;
 
 namespace Dapr.LogicApps.Workflow
 {
@@ -76,8 +78,16 @@ namespace Dapr.LogicApps.Workflow
 
             var dispatcher = new EdgeFlowJobsDispatcher(
                 flowConfiguration: flowConfig,
-                httpConfiguration: httpConfig,
-                requestPipeline: null);
+                httpConfiguration: httpConfig);
+
+            var callbackFactory = new FlowJobsCallbackFactory(
+                            flowConfiguration: flowConfig,
+                            httpConfiguration: httpConfig,
+                            requestPipeline: null);
+
+            flowConfig.InitializeFlowJobCallbackConfiguration(
+                jobCallbackFactory: callbackFactory,
+                jobCallbackAssemblies: new[] { typeof(FlowJobCallback<>).Assembly, typeof(ServiceProviderActionJob).Assembly });
 
             dispatcher.Start();
             dispatcher.ProvisionSystemJobs();
