@@ -73,7 +73,9 @@ dapr init
 #### Invoke Logic Apps using Dapr
 
 ```
-dapr run --app-id logicapps --protocol grpc --app-port 50003 -- dotnet run --workflows-path ./example
+cd src/Dapr.LogicApps
+
+dapr run --app-id logicapps --protocol grpc --port 3500 --app-port 50003 -- dotnet run --workflows-path ../../example
 
 curl http://localhost:3500/v1.0/invoke/logicapps/method/workflow1
 
