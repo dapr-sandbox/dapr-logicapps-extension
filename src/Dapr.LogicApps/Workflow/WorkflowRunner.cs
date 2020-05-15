@@ -1,23 +1,29 @@
-using System.Threading.Tasks;
-using System.Net.Http;
-using Microsoft.Azure.Workflows.Data.Entities;
-using Microsoft.Azure.Workflows.Templates.Extensions;
-using System.Linq;
-using Microsoft.Azure.Workflows.Data.Configuration;
-using System.Threading;
-using Microsoft.Azure.Workflows.Common.Constants;
-using Microsoft.WindowsAzure.ResourceStack.Common.Extensions;
-using Microsoft.WindowsAzure.ResourceStack.Common.Instrumentation;
-using System.Collections.Generic;
-using System;
-using Google.Protobuf.WellKnownTypes;
-using Google.Protobuf;
-using Grpc.Core;
-using Microsoft.Azure.Workflows.Data;
-using Dapr.Client.Autogen.Grpc.v1;
+﻿// ------------------------------------------------------------
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+// ------------------------------------------------------------
 
 namespace Dapr.LogicApps.Workflow
 {
+    using System.Threading.Tasks;
+    using System.Net.Http;
+    using Microsoft.Azure.Workflows.Data.Entities;
+    using Microsoft.Azure.Workflows.Templates.Extensions;
+    using System.Linq;
+    using Microsoft.Azure.Workflows.Data.Configuration;
+    using System.Threading;
+    using Microsoft.Azure.Workflows.Common.Constants;
+    using Microsoft.WindowsAzure.ResourceStack.Common.Extensions;
+    using Microsoft.WindowsAzure.ResourceStack.Common.Instrumentation;
+    using System.Collections.Generic;
+    using System;
+    using Google.Protobuf.WellKnownTypes;
+    using Google.Protobuf;
+    using Grpc.Core;
+    using Microsoft.Azure.Workflows.Data;
+    using Dapr.Client.Autogen.Grpc.v1;
+
+
     public class DaprWorkflowExecutor : DaprClient.DaprClientBase
     {
         private List<WorkflowConfig> workflows;
