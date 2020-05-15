@@ -1,17 +1,20 @@
-
-
-using System.Collections;
-using System.Globalization;
-using System.Linq;
-using System.Reflection;
-using System.Resources;
-using System.Xml;
-using System.Xml.Linq;
-using System.Xml.XPath;
-using Microsoft.WindowsAzure.ResourceStack.Common.Services;
+﻿// ------------------------------------------------------------
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+// ------------------------------------------------------------
 
 namespace Dapr.LogicApps.Configuration
 {
+    using System.Collections;
+    using System.Globalization;
+    using System.Linq;
+    using System.Reflection;
+    using System.Resources;
+    using System.Xml;
+    using System.Xml.Linq;
+    using System.Xml.XPath;
+    using Microsoft.WindowsAzure.ResourceStack.Common.Services;
+
     internal class FlowConfigurationManager : AzureConfigurationManager
     {
         /// <summary>Gets or sets the XML application settings.</summary>

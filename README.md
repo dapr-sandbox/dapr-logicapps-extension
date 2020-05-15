@@ -111,7 +111,7 @@ kubectl logs -l app=dapr-logicapps-host -c host
 
 ## Build
 
-Make sure you have dotnet core installed on your machine.
+Make sure you have dotnet core installed on your machine. At minimum, you need [.NET Core SDK 3.1](https://dotnet.microsoft.com/download/dotnet-core/3.1) to build.
 
 1. Clone the repo
 2. Inside the top level dir, run: `dotnet build`

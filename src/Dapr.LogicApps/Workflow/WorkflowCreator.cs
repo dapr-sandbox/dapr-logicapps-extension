@@ -1,21 +1,26 @@
-using System;
-using System.IO;
-using System.Collections.Generic;
-using Dapr.LogicApps.Configuration;
-using Microsoft.Azure.Workflows.Data.Configuration;
-using Microsoft.Azure.Workflows.Data.Definitions;
-using Microsoft.Azure.Workflows.Worker;
-using Microsoft.WindowsAzure.ResourceStack.Common.Services;
-using Newtonsoft.Json;
-using Microsoft.Azure.Workflows.Common.Constants;
-using Microsoft.Azure.Workflows.Data.Engines;
-using Microsoft.Azure.Workflows.Web.Engines;
-using Microsoft.Azure.Workflows.Common.Extensions;
-using Microsoft.Azure.Workflows.Worker.Jobs;
-using Microsoft.Azure.Workflows.Worker.Dispatcher;
+﻿// ------------------------------------------------------------
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+// ------------------------------------------------------------
 
 namespace Dapr.LogicApps.Workflow
 {
+    using System;
+    using System.IO;
+    using System.Collections.Generic;
+    using Dapr.LogicApps.Configuration;
+    using Microsoft.Azure.Workflows.Data.Configuration;
+    using Microsoft.Azure.Workflows.Data.Definitions;
+    using Microsoft.Azure.Workflows.Worker;
+    using Microsoft.WindowsAzure.ResourceStack.Common.Services;
+    using Newtonsoft.Json;
+    using Microsoft.Azure.Workflows.Common.Constants;
+    using Microsoft.Azure.Workflows.Data.Engines;
+    using Microsoft.Azure.Workflows.Web.Engines;
+    using Microsoft.Azure.Workflows.Common.Extensions;
+    using Microsoft.Azure.Workflows.Worker.Jobs;
+    using Microsoft.Azure.Workflows.Worker.Dispatcher;
+
     public class WorkflowEngine
     {
         public EdgeFlowConfiguration Config { get; set; }
