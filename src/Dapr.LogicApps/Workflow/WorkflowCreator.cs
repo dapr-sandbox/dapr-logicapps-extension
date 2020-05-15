@@ -54,10 +54,8 @@ namespace Dapr.LogicApps.Workflow
 
                 var workflowJson = File.ReadAllText(fi.FullName);
                 var workflowDef = JsonConvert.DeserializeObject<FlowPropertiesDefinition>(workflowJson);
-                var def = new FlowDefinition(FlowConstants.GeneralAvailabilitySchemaVersion)
-                {
-                    Properties = workflowDef
-                };
+                var def = new FlowDefinition(FlowConstants.GeneralAvailabilitySchemaVersion);
+                def.Properties = workflowDef;
 
                 var flowName = Path.GetFileNameWithoutExtension(fi.FullName);
                 engine.ValidateAndCreateFlow(flowName, def.Properties).Wait();
