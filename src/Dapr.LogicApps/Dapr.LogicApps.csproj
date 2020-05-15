@@ -21,6 +21,7 @@
  <ItemGroup>
     <Protobuf Include="**/*.proto" />
   </ItemGroup>
+ 
 
   <!-- Enable signing -->
   <PropertyGroup>

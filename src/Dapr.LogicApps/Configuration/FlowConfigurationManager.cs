@@ -1,20 +1,19 @@
-﻿// ------------------------------------------------------------
-// Copyright (c) Microsoft Corporation.
-// Licensed under the MIT License.
-// ------------------------------------------------------------
+﻿
+
+using System.Collections;
+using System.Configuration;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Resources;
+using System.Xml;
+using System.Xml.Linq;
+using System.Xml.XPath;
+using Microsoft.WindowsAzure.ResourceStack.Common.Services;
 
 namespace Dapr.LogicApps.Configuration
 {
-    using System.Collections;
-    using System.Globalization;
-    using System.Linq;
-    using System.Reflection;
-    using System.Resources;
-    using System.Xml;
-    using System.Xml.Linq;
-    using System.Xml.XPath;
-    using Microsoft.WindowsAzure.ResourceStack.Common.Services;
-
     internal class FlowConfigurationManager : AzureConfigurationManager
     {
         /// <summary>Gets or sets the XML application settings.</summary>
@@ -23,11 +22,10 @@ namespace Dapr.LogicApps.Configuration
         /// <summary>
         /// Initializes a new instance of the <see cref="T:Microsoft.Azure.Flow.WebJobs.Extensions.Initialization.FlowConfigurationManager" /> class.
         /// </summary>
-        public FlowConfigurationManager()
+         public FlowConfigurationManager()
         {
-            var rm = new ResourceManager("Dapr.LogicApps.Resources", Assembly.GetExecutingAssembly());
-            var str = rm.GetString("FlowSettings", CultureInfo.CurrentCulture);
-            this.FlowAppSettings = XDocument.Parse(str);
+            var hostFile = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None).FilePath;
+            this.FlowAppSettings = XDocument.Parse(File.ReadAllText(hostFile));
         }
 
         /// <summary>Gets configuration settings.</summary>
