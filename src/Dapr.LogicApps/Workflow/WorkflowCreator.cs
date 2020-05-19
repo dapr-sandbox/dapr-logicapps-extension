@@ -64,10 +64,14 @@ namespace Dapr.LogicApps.Workflow
             }
         }
 
-        public static WorkflowEngine CreateEngine()
+        public static WorkflowEngine CreateEngine(Credentials credentials)
         {
             Console.WriteLine("Loading Configuration");
-            CloudConfigurationManager.Instance = (IConfigurationManager)new FlowConfigurationManager();
+
+            var workflowConfig = new FlowConfigurationManager();
+            workflowConfig.SetCredentials(credentials);
+
+            CloudConfigurationManager.Instance = (IConfigurationManager)workflowConfig;
 
             Console.WriteLine("Creating Edge Configuration");
             var flowConfig = new EdgeFlowConfiguration(CloudConfigurationManager.Instance as Microsoft.WindowsAzure.ResourceStack.Common.Services.AzureConfigurationManager);

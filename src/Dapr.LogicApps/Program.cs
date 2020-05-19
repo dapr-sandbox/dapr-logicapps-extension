@@ -13,14 +13,15 @@ namespace Dapr.LogicApps
     using Dapr.LogicApps.Workflow;
     using Dapr.Client.Autogen.Grpc.v1;
 
-
     class Program
     {
         const int ServerPort = 50003;
         const string WorkflowsPathArg = "--workflows-path";
+        const string StorageAccountKey = "STORAGE_ACCOUNT_KEY";
+        const string StorageAccountName = "STORAGE_ACCOUNT_NAME";
 
         static void Main(string[] args)
-        {            
+        {    
             // Load Workflows
             if (!args.ToList().Any(d=> d == WorkflowsPathArg)) 
             {
@@ -32,8 +33,34 @@ namespace Dapr.LogicApps
                 throw new Exception($"{WorkflowsPathArg} cannot be empty");
             }
 
+            // Get Azure Storage credentials
+            var envVars = Environment.GetEnvironmentVariables();
+            if (!envVars.Contains(StorageAccountKey))
+            {
+                throw new Exception($"{StorageAccountKey} environment variable not set");
+            }
+
+            if (!envVars.Contains(StorageAccountName))
+            {
+                throw new Exception($"{StorageAccountName} environment variable not set");
+            }
+
+            var storageAccountName = envVars[StorageAccountName].ToString();
+            var storageAccountKey = envVars[StorageAccountKey].ToString();
+
+            if (string.IsNullOrEmpty(storageAccountName))
+            {
+                throw new Exception($"{StorageAccountName} environment variablec cannot be empty");
+            }
+
+            if (string.IsNullOrEmpty(storageAccountKey))
+            {
+                throw new Exception($"{StorageAccountKey} environment variablec cannot be empty");
+            }
+
             // Create engine
-            var workflowEngine = WorkflowCreator.CreateEngine();
+            var credentials = new Credentials(storageAccountName, storageAccountKey);
+            var workflowEngine = WorkflowCreator.CreateEngine(credentials);
 
             // Load and register workflows
             var workflows = WorkflowCreator.LoadWorkflows(workflowPath, workflowEngine.Engine);

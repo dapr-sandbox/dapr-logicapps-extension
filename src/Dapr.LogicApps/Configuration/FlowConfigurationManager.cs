@@ -5,12 +5,15 @@ using System.Configuration;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Collections.Generic;
 using System.Reflection;
 using System.Resources;
 using System.Xml;
 using System.Xml.Linq;
 using System.Xml.XPath;
+using Dapr.LogicApps.Workflow;
 using Microsoft.WindowsAzure.ResourceStack.Common.Services;
+using System.Diagnostics;
 
 namespace Dapr.LogicApps.Configuration
 {
@@ -18,14 +21,39 @@ namespace Dapr.LogicApps.Configuration
     {
         /// <summary>Gets or sets the XML application settings.</summary>
         private XDocument FlowAppSettings { get; set; }
+        private List<string> settings = new List<string>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="T:Microsoft.Azure.Flow.WebJobs.Extensions.Initialization.FlowConfigurationManager" /> class.
         /// </summary>
-         public FlowConfigurationManager()
+        public FlowConfigurationManager()
         {
+            PopulateSettings();
+
             var hostFile = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None).FilePath;
             this.FlowAppSettings = XDocument.Parse(File.ReadAllText(hostFile));
+        }
+
+        private void PopulateSettings()
+        {
+            settings.Add("CloudStorageAccount.Workflows.BillingDataStorage.ConnectionString");
+            settings.Add("CloudStorageAccount.Workflows.RegionalDataStorage.ConnectionString");
+            settings.Add("CloudStorageAccount.Workflows.HydrationDataStorage.ConnectionString");
+            settings.Add("CloudStorageAccount.Workflows.PlatformArtifactsContentStorage.ConnectionString");
+            settings.Add("CloudStorageAccount.Workflows.ScaleUnitsDataStorage.CU00.ConnectionString");
+            settings.Add("CloudStorageAccount.Workflows.PairedRegion.RegionalDataStorage.ConnectionString");
+            settings.Add("CloudStorageAccount.Flow.FunctionAppsRuntimeStorage.ConnectionString");
+            settings.Add("CloudStorageAccount.Flow.FunctionAppsSecretStorage.ConnectionString");
+        }
+
+        public void SetCredentials(Credentials credentials)
+        {
+            string connectionString = $"DefaultEndpointsProtocol=https;AccountName={credentials.StorageAccountName};AccountKey={credentials.StorageAccountKey};EndpointSuffix=core.windows.net";
+
+            settings.ForEach(s => {
+                var node = this.FlowAppSettings.Root.Elements().FirstOrDefault().Elements().FirstOrDefault(d => d.Attribute("key").Value == s);
+                node.Attribute("value").Value = connectionString;
+            });
         }
 
         /// <summary>Gets configuration settings.</summary>

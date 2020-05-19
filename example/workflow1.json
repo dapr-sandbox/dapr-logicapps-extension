@@ -30,8 +30,5 @@
         "type": "Request"
       }
     }
-  },
-  "runtimeConfiguration": {
-    "operationOptions": "WithStatelessRunHistory"
   }
 }
