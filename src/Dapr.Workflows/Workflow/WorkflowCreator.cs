@@ -3,12 +3,12 @@
 // Licensed under the MIT License.
 // ------------------------------------------------------------
 
-namespace Dapr.LogicApps.Workflow
+namespace Dapr.Workflows.Workflow
 {
     using System;
     using System.IO;
     using System.Collections.Generic;
-    using Dapr.LogicApps.Configuration;
+    using Dapr.Workflows.Configuration;
     using Microsoft.Azure.Workflows.Data.Configuration;
     using Microsoft.Azure.Workflows.Data.Definitions;
     using Microsoft.Azure.Workflows.Worker;

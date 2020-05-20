@@ -22,8 +22,19 @@ spec:
       containers:
       - name: host
         image: yaron2/workflows2
+        env:
+        - name: STORAGE_ACCOUNT_KEY
+          valueFrom:
+            secretKeyRef:
+              name: dapr-workflows
+              key: accountKey
+        - name: STORAGE_ACCOUNT_NAME
+          valueFrom:
+            secretKeyRef:
+              name: dapr-workflows
+              key: accountName
         command: ["dotnet"]
-        args: ["app/Dapr.workflows.dll", "--workflows-path", "/workflows"]
+        args: ["app/Dapr.Workflows.dll", "--workflows-path", "/workflows"]
         ports:
         - containerPort: 50003
         imagePullPolicy: Always

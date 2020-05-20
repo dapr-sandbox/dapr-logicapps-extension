@@ -3,14 +3,14 @@
 // Licensed under the MIT License.
 // ------------------------------------------------------------
 
-namespace Dapr.LogicApps
+namespace Dapr.Workflows
 {
     using System;
     using System.Linq;
     using System.Threading;
     using Grpc.Core;
     using System.Threading.Tasks;
-    using Dapr.LogicApps.Workflow;
+    using Dapr.Workflows.Workflow;
     using Dapr.Client.Autogen.Grpc.v1;
 
     class Program

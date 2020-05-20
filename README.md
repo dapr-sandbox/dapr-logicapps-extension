@@ -9,6 +9,8 @@ Dapr Workflows hosts a gRPC server that implements the Dapr Client API.
 This allows users to start workflows using gRPC and HTTP endpoints through Dapr, or start a workflow asynchronously using Dapr bindings.
 Once a workflow request comes in, Dapr Workflows uses the Logic Apps SDK to execute the workflow.
 
+![Diagram](./assets/architecture_diagram.png)
+
 ### Benefits
 
 * Run workflows anywhere - on your local machine, on-premises, on Kubernetes or in the cloud
@@ -113,7 +115,7 @@ export STORAGE_ACCOUNT_NAME=<YOUR-STORAGE-ACCOUNT-NAME>
 ```
 
 ```
-cd src/Dapr.LogicApps
+cd src/Dapr.Workflows
 
 dapr run --app-id workflows --protocol grpc --port 3500 --app-port 50003 -- dotnet run --workflows-path ../../samples
 
