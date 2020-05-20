@@ -41,6 +41,37 @@ Prerequisites:
 1. Install the [Dapr CLI](https://github.com/dapr/cli#getting-started)
 2. [Azure Blob Storage Account](https://docs.microsoft.com/en-us/azure/storage/blobs/storage-blob-create-account-block-blob?tabs=azure-portal)
 
+### Self hosted (running locally)
+
+#### Deploy Dapr
+
+Once you have the Dapr CLI installed, run:
+
+```
+dapr init
+```
+
+#### Invoke Logic Apps using Dapr
+
+First, set up the environment variables containing the Azure Storage Account credentials:
+
+```bash
+export STORAGE_ACCOUNT_KEY=<YOUR-STORAGE-ACCOUNT-KEY>
+export STORAGE_ACCOUNT_NAME=<YOUR-STORAGE-ACCOUNT-NAME>
+```
+
+```
+cd src/Dapr.Workflows
+
+dapr run --app-id workflows --protocol grpc --port 3500 --app-port 50003 -- dotnet run --workflows-path ../../samples
+
+curl http://localhost:3500/v1.0/invoke/workflows/method/workflow1
+
+{"value":"Hello from Logic App workflow running with Dapr!"}                                                                                   
+```
+
+Rejoice!
+
 ### Kubernetes
 
 Make sure you have a running Kubernetes cluster and `kubectl` in your path.
@@ -91,37 +122,6 @@ curl http://localhost:3500/v1.0/invoke/workflows/method/workflow1
 {"value":"Hello from Logic App workflow running with Dapr!"}                                                                                   
 ```
 
-Rejoice!
-
-### Self hosted (running locally)
-
-#### Deploy Dapr
-
-Once you have the Dapr CLI installed, run:
-
-```
-dapr init
-```
-
-#### Invoke Logic Apps using Dapr
-
-First, set up the environment variables containing the Azure Storage Account credentials:
-
-```bash
-export STORAGE_ACCOUNT_KEY=<YOUR-STORAGE-ACCOUNT-KEY>
-export STORAGE_ACCOUNT_NAME=<YOUR-STORAGE-ACCOUNT-NAME>
-```
-
-```
-cd src/Dapr.Workflows
-
-dapr run --app-id workflows --protocol grpc --port 3500 --app-port 50003 -- dotnet run --workflows-path ../../samples
-
-curl http://localhost:3500/v1.0/invoke/workflows/method/workflow1
-
-{"value":"Hello from Logic App workflow running with Dapr!"}                                                                                   
-```
-
 Rejoice once more!
 
 ### Invoking workflows using Dapr bindings
@@ -153,15 +153,15 @@ spec:
     value: "false"
 ```
 
+#### Self hosted
+
+Place the binding yaml file above in a `components` directory at the root of your application.
+
 #### Kubernetes
 
 ```
 kubectl apply -f my_binding.yaml
 ```
-
-#### Self hosted
-
-Place the binding yaml file above in a `components` directory at the root of your application.
 
 #### Seeing events triggering logic apps
 
