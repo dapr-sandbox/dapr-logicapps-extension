@@ -1,8 +1,30 @@
 # Dapr Workflows - Run Cloud-Native Workflows using Dapr
 
-Dapr Workflows is a lightweight host that allows developers to run cloud-native workflows in any environment using Azure Logic Apps and Dapr.
+Dapr Workflows is a lightweight host that allows developers to run cloud-native workflows in any environment using a hosted [Azure Logic Apps](https://docs.microsoft.com/en-us/azure/logic-apps/logic-apps-overview) workflow engine and [Dapr](https://github.com/dapr/dapr).
+
+## Contents
+
+- [Benefits](#benefits)
+- [How it works](#how-it-works)
+- [Example](#example)
+- [Get Started](#get-started)
+- [Supported workflow features](#supported-workflow-features)
+- [Build](#build)
+
+## Benefits
+
+By using a workflow engine, business logic can be defined in a declarative, no-code fashion so application code doesn't need to change when a workflow changes. Dapr Workflows allows you to use workflows in a distributed application along with these added benefits:
+
+* Run workflows anywhere - on your local machine, on-premises, on Kubernetes or in the cloud
+* Built-in tracing, metrics and mTLS through Dapr
+* gRPC and HTTP endpoints for your workflows
+* Kick off workflows based on Dapr bindings events
+* Orchestrate complex workflows by calling back to Dapr to save state, publish a message and more
 
 ## How it works
+
+>**New to Dapr?**
+> Learn more about Dapr with [this overview](https://github.com/dapr/docs/blob/master/overview/README.md)
 
 Dapr Workflows hosts a gRPC server that implements the Dapr Client API.
 
@@ -11,19 +33,11 @@ Once a workflow request comes in, Dapr Workflows uses the Logic Apps SDK to exec
 
 ![Diagram](./assets/architecture_diagram.png)
 
-### Benefits
+## Example
 
-* Run workflows anywhere - on your local machine, on-premises, on Kubernetes or in the cloud
-* Built-in tracing, metrics and mTLS through Dapr
-* gRPC and HTTP endpoints for your workflows
-* Kick off workflows based on Dapr bindings events
-* Orchestrate complex workflows by calling back to Dapr to save state, publish a message and more
+Dapr Workflows can be used as the orchestrator for many otherwise complex activities. For example, invoking an external endpoint, saving the data to a state store, publishing the result to a different app or invoking a binding can all be done by calling back into Dapr from the workflow itself.
 
-You can use Dapr Workflows as the orchestrator for many otherwise complex activities.
-
-For example, invoking an external endpoint, saving the data to a state store, publishing the result to a different app or invoking a binding can all be done by calling back into Dapr from the workflow itself.
-
-This is thanks to the fact Dapr runs as a sidecar next to the workflow host just as if it was any other app.
+This is due to the fact Dapr runs as a sidecar next to the workflow host just as if it was any other app.
 
 Examine [workflow2.json](./samples/workflow2.json) as an example of a workflow that does the following:
 
@@ -34,7 +48,7 @@ Examine [workflow2.json](./samples/workflow2.json) as an example of a workflow t
 
 Since Dapr supports many pluggable state stores and bindings, the workflow becomes portable between different environments (cloud, edge or on-premises) without the user changing the code - *because there is no code involved*.
 
-## Quick start
+## Get Started
 
 Prerequisites:
 
@@ -174,23 +188,23 @@ On Kubernetes, run the following command:
 ```
 kubectl logs -l app=dapr-workflows-host -c host
 ```
+## Supported workflow features
 
-## Supported Actions and Triggers
+### Supported Actions and Triggers
 
-* HTTP
-* Schedule
-* Request
-* Response
+* [HTTP](https://docs.microsoft.com/en-us/azure/connectors/connectors-native-http)
+* [Schedule](https://docs.microsoft.com/en-us/azure/logic-apps/concepts-schedule-automated-recurring-tasks-workflows)
+* [Request / Response](https://docs.microsoft.com/en-us/azure/connectors/connectors-native-reqres)
 
-## Supported Control Workflows
+### Supported Control Workflows
 
 * [All Control Workflows](https://docs.microsoft.com/en-us/azure/connectors/apis-list#control-workflow)
 
-## Supported Data Manipulation
+### Supported Data Manipulation
 
 * [All Data Operations](https://docs.microsoft.com/en-us/azure/connectors/apis-list#manage-or-manipulate-data)
 
-## Not supported
+### Not supported
 
 * [Managed Connectors](https://docs.microsoft.com/en-us/azure/connectors/apis-list#managed-connectors)
 
