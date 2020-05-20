@@ -1,6 +1,6 @@
 # Dapr Workflows - Run Cloud-Native Worfklows using Dapr
 
-Dapr Workflows is a lightweight host that allows developers to run cloud-native workflows in any environment using Azure Logic Apps.
+Dapr Workflows is a lightweight host that allows developers to run cloud-native workflows in any environment using Azure Logic Apps and Dapr.
 
 ## How it works
 
