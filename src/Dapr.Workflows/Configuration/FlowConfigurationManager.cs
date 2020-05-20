@@ -17,7 +17,7 @@ using System.Diagnostics;
 
 namespace Dapr.Workflows.Configuration
 {
-    internal class FlowConfigurationManager : AzureConfigurationManager
+    public class FlowConfigurationManager : AzureConfigurationManager
     {
         /// <summary>Gets or sets the XML application settings.</summary>
         private XDocument FlowAppSettings { get; set; }
