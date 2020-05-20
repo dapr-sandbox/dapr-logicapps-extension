@@ -1,29 +1,29 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: dapr-logicapps-host
+  name: dapr-workflows-host
   labels:
-    app: dapr-logicapps-host
+    app: dapr-workflows-host
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: dapr-logicapps-host
+      app: dapr-workflows-host
   template:
     metadata:
       labels:
-        app: dapr-logicapps-host
+        app: dapr-workflows-host
       annotations:
-        dapr.io/id: "logicapps"
+        dapr.io/id: "workflows"
         dapr.io/enabled: "true"
         dapr.io/port: "50003"
         dapr.io/protocol: "grpc"
     spec:
       containers:
       - name: host
-        image: yaron2/logicapps2
+        image: yaron2/workflows2
         command: ["dotnet"]
-        args: ["app/Dapr.LogicApps.dll", "--workflows-path", "/workflows"]
+        args: ["app/Dapr.workflows.dll", "--workflows-path", "/workflows"]
         ports:
         - containerPort: 50003
         imagePullPolicy: Always
@@ -33,4 +33,4 @@ spec:
       volumes:
         - name: workflows
           configMap:
-            name: logicapps
+            name: workflows

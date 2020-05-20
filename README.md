@@ -1,20 +1,45 @@
-# Icarus - A Dapr-enabled runtime host for Azure Logic Apps
+# Dapr Workflows - Run Cloud-Native Worfklows using Dapr
 
-![Icarus](./assets/icarus.png)
-
-Icarus is a lightweight host for Azure Logic Apps written in dotnet core that allows developers to execute Azure Logic Apps workflows using Dapr.
+Dapr Workflows is a lightweight host that allows developers to run cloud-native workflows in any environment using Azure Logic Apps.
 
 ## How it works
 
-Icarus starts a gRPC server that implements the Dapr Client API and registers for Dapr binding triggers, as well as receiving response-requests style invocations over HTTP or gRPC.
+Dapr Workflows hosts a gRPC server that implements the Dapr Client API.
 
-Once a workflow request comes in, Icarus uses the Azure Logic Apps DLLs to execute the workflow in-proc.
+This allows users to start workflows using gRPC and HTTP endpoints through Dapr, or start a workflow asynchronously using Dapr bindings.
+Once a workflow request comes in, Dapr Workflows uses the Logic Apps SDK to execute the workflow.
+
+### Benefits
+
+* Run workflows anywhere - on your local machine, on-premises, on Kubernetes or in the cloud
+* Built-in tracing, metrics and mTLS through Dapr
+* gRPC and HTTP endpoints for your workflows
+* Kick off workflows based on Dapr bindings events
+* Orchestrate complex workflows by calling back to Dapr to save state, publish a message and more
+
+You can use Dapr Workflows as the orchestrator for many otherwise complex activities.
+
+For example, invoking an external endpoint, saving the data to a state store, publishing the result to a different app or invoking a binding can
+All be done by calling back into Dapr from the workflow itself.
+
+This is thanks to the fact Dapr runs as a sidecar next to the workflow host just as if it was any other app.
+
+Examine [workflow 2](./samples/workflow2.json) as an example of a workflow that does the following:
+
+1. Calls into Azure Functions to get a JSON response
+2. Saves the result to a Dapr state store
+3. Sends the result to a Dapr binding
+4. Returns the result to the caller
+
+Since Dapr supports many pluggable state stores and bindings, the workflow becomes portable between different environments (cloud, edge or on-premises)
+Without the user changing the code - *because there is no code involved*.
 
 ## Quick start
 
 Prerequisites:
 
-1. Install [Dapr CLI](https://github.com/dapr/cli#getting-started)
+1. Install the [Dapr CLI](https://github.com/dapr/cli#getting-started)
+2. [Azure Blob Storage Account](https://docs.microsoft.com/en-us/azure/storage/blobs/storage-blob-create-account-block-blob?tabs=azure-portal)
 
 ### Kubernetes
 
@@ -33,27 +58,35 @@ Wait until the Dapr pods have the status `Running`.
 #### Create a Config Map for the workflow
 
 ```
-kubectl create configmap logicapps --from-file workflow1.json
+kubectl create configmap workflows --from-file workflow1.json
 ```
 
-#### Deploy Icarus
+#### Create a secret containing the Azure Storage Account credentials
+
+Replace the account name and key values below with the actual credentials:
+
+```
+kubectl create secret generic dapr-workflows --from-literal=accountName=<YOUR-STORAGE-ACCOUNT-NAME> --from-literal=accountKey=<YOUR-STORAGE-ACCOUNT-KEY>
+```
+
+#### Deploy Dapr Worfklows
 
 ```
 kubectl apply -f deploy/deploy.yaml
 ```
 
-#### Invoke Logic Apps using Dapr
+#### Invoke the workflow using Dapr
 
-Create a port-forward to the logic apps container:
+Create a port-forward to the dapr workflows container:
 
 ```
-kubectl port-forward deploy/dapr-logicapps-host 3500:3500
+kubectl port-forward deploy/dapr-workflows-host 3500:3500
 ```
 
 Now, invoke logic apps through Dapr:
 
 ```
-curl http://localhost:3500/v1.0/invoke/logicapps/method/workflow1
+curl http://localhost:3500/v1.0/invoke/workflows/method/workflow1
 
 {"value":"Hello from Logic App workflow running with Dapr!"}                                                                                   
 ```
@@ -72,22 +105,53 @@ dapr init
 
 #### Invoke Logic Apps using Dapr
 
+First, set up the environment variables containing the Azure Storage Account credentials:
+
+```bash
+export STORAGE_ACCOUNT_KEY=<YOUR-STORAGE-ACCOUNT-KEY>
+export STORAGE_ACCOUNT_NAME=<YOUR-STORAGE-ACCOUNT-NAME>
+```
+
 ```
 cd src/Dapr.LogicApps
 
-dapr run --app-id logicapps --protocol grpc --port 3500 --app-port 50003 -- dotnet run --workflows-path ../../example
+dapr run --app-id workflows --protocol grpc --port 3500 --app-port 50003 -- dotnet run --workflows-path ../../samples
 
-curl http://localhost:3500/v1.0/invoke/logicapps/method/workflow1
+curl http://localhost:3500/v1.0/invoke/workflows/method/workflow1
 
 {"value":"Hello from Logic App workflow running with Dapr!"}                                                                                   
 ```
 
 Rejoice once more!
 
-### Invoking Logic Apps using Dapr bindings
+### Invoking workflows using Dapr bindings
 
 First, create any Dapr binding of your choice.
+
 See [this](https://github.com/dapr/docs/tree/master/howto/trigger-app-with-input-binding) How-To tutorial and [sample](https://github.com/dapr/samples/tree/master/5.bindings) to get started.
+
+In order for Dapr Workflows to be able to start a workflow from a Dapr binding event, simply name the binding with the name of the workflow you want it to trigger.
+Couldn't get any simpler!
+
+Here's an example of a Kafka binding that will trigger a workflow named `workflow1`:
+
+```yaml
+apiVersion: dapr.io/v1alpha1
+kind: Component
+metadata:
+  name: workflow1
+spec:
+  type: bindings.kafka
+  metadata:
+  - name: topics
+    value: topic1
+  - name: brokers
+    value: localhost:9092
+  - name: consumerGroup
+    value: group1
+  - name: authRequired
+    value: "false"
+```
 
 #### Kubernetes
 
@@ -97,19 +161,38 @@ kubectl apply -f my_binding.yaml
 
 #### Self hosted
 
-Place the binding yaml file in a `components` in the top level of your app dir.
+Place the binding yaml file above in a `components` directory at the root of your application.
 
 #### Seeing events triggering logic apps
 
-Once an event is sent to the bindings components, check the logs of Icarus to see the output.
+Once an event is sent to the bindings component, check the logs Dapr Workflows to see the output.
 
 In standalone mode, the output will be printed to the local terminal.
 
 On Kubernetes, run the following command:
 
 ```
-kubectl logs -l app=dapr-logicapps-host -c host
+kubectl logs -l app=dapr-workflows-host -c host
 ```
+
+## Supported Actions and Triggers
+
+* HTTP
+* Schedule
+* Request
+* Response
+
+## Supported Control Workflows
+
+* [All Control Workflows](https://docs.microsoft.com/en-us/azure/connectors/apis-list#control-workflow)
+
+## Supported Data Manipulation
+
+* [All Data Operations](https://docs.microsoft.com/en-us/azure/connectors/apis-list#manage-or-manipulate-data)
+
+## Not supported
+
+* [Managed Connectors](https://docs.microsoft.com/en-us/azure/connectors/apis-list#managed-connectors)
 
 ## Build
 
@@ -139,11 +222,3 @@ Push image:
 ```
 docker push <registry>/<image>
 ```
-
-## To Do
-
-* Stateful workflows
-* Custom connectors
-* Support multiple bindings
-* async/await-isms
-* Remove unused dlls in /bin
