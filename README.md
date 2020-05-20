@@ -21,8 +21,7 @@ Once a workflow request comes in, Dapr Workflows uses the Logic Apps SDK to exec
 
 You can use Dapr Workflows as the orchestrator for many otherwise complex activities.
 
-For example, invoking an external endpoint, saving the data to a state store, publishing the result to a different app or invoking a binding can
-All be done by calling back into Dapr from the workflow itself.
+For example, invoking an external endpoint, saving the data to a state store, publishing the result to a different app or invoking a binding can all be done by calling back into Dapr from the workflow itself.
 
 This is thanks to the fact Dapr runs as a sidecar next to the workflow host just as if it was any other app.
 
