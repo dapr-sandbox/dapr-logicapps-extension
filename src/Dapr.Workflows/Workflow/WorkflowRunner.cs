@@ -3,7 +3,7 @@
 // Licensed under the MIT License.
 // ------------------------------------------------------------
 
-namespace Dapr.LogicApps.Workflow
+namespace Dapr.Workflows.Workflow
 {
     using System.Threading.Tasks;
     using System.Net.Http;

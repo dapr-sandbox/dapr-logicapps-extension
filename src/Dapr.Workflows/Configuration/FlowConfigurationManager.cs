@@ -11,11 +11,11 @@ using System.Resources;
 using System.Xml;
 using System.Xml.Linq;
 using System.Xml.XPath;
-using Dapr.LogicApps.Workflow;
+using Dapr.Workflows.Workflow;
 using Microsoft.WindowsAzure.ResourceStack.Common.Services;
 using System.Diagnostics;
 
-namespace Dapr.LogicApps.Configuration
+namespace Dapr.Workflows.Configuration
 {
     internal class FlowConfigurationManager : AzureConfigurationManager
     {
