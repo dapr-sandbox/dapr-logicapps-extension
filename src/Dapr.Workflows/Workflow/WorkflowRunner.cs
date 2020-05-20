@@ -54,7 +54,7 @@ namespace Dapr.Workflows.Workflow
             };
         }
 
-        private bool WorkflowExists(string name)
+        public bool WorkflowExists(string name)
         {
             return this.workflows.Any(w => w.Name == name);
         }
