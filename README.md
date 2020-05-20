@@ -32,8 +32,7 @@ Examine [workflow2.json](./samples/workflow2.json) as an example of a workflow t
 3. Sends the result to a Dapr binding
 4. Returns the result to the caller
 
-Since Dapr supports many pluggable state stores and bindings, the workflow becomes portable between different environments (cloud, edge or on-premises)
-Without the user changing the code - *because there is no code involved*.
+Since Dapr supports many pluggable state stores and bindings, the workflow becomes portable between different environments (cloud, edge or on-premises) without the user changing the code - *because there is no code involved*.
 
 ## Quick start
 
