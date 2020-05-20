@@ -26,7 +26,7 @@ All be done by calling back into Dapr from the workflow itself.
 
 This is thanks to the fact Dapr runs as a sidecar next to the workflow host just as if it was any other app.
 
-Examine [workflow 2](./samples/workflow2.json) as an example of a workflow that does the following:
+Examine [workflow2.json](./samples/workflow2.json) as an example of a workflow that does the following:
 
 1. Calls into Azure Functions to get a JSON response
 2. Saves the result to a Dapr state store
