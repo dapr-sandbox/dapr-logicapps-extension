@@ -46,17 +46,17 @@ namespace Dapr.Workflows.Workflow
                 throw new DirectoryNotFoundException($"Couldn't find workflow directory {workflowsDir}");
             }
 
-            foreach (var file in Directory.EnumerateFiles(workflowsDir))
+            foreach (var dir in Directory.EnumerateDirectories(workflowsDir))
             {
-                var fi = new FileInfo(file);
-                Console.WriteLine($"Loading workflow: {fi.Name}");
+                var workflowFileInfo = new FileInfo(Path.Combine(workflowsDir, dir, "workflow.json"));
+                Console.WriteLine($"Loading workflow: {workflowFileInfo.FullName}");
 
-                var workflowJson = File.ReadAllText(fi.FullName);
+                var workflowJson = File.ReadAllText(workflowFileInfo.FullName);
                 var workflowDef = JsonConvert.DeserializeObject<FlowPropertiesDefinition>(workflowJson);
                 var def = new FlowDefinition(FlowConstants.GeneralAvailabilitySchemaVersion);
                 def.Properties = workflowDef;
 
-                var flowName = Path.GetFileNameWithoutExtension(fi.FullName);
+                var flowName = dir;
                 engine.ValidateAndCreateFlow(flowName, def.Properties).Wait();
                 Console.WriteLine("Flow Created");
                 yield return new WorkflowConfig(flowName, def);
