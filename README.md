@@ -69,14 +69,14 @@ dapr init
 
 First, set up the environment variables containing the Azure Storage Account credentials:
 
-Non-Windows host
+Mac / Linux
 
 ```bash
 export STORAGE_ACCOUNT_KEY=<YOUR-STORAGE-ACCOUNT-KEY>
 export STORAGE_ACCOUNT_NAME=<YOUR-STORAGE-ACCOUNT-NAME>
 ```
 
-Windows host
+Windows
 
 ```bash
 set STORAGE_ACCOUNT_KEY=<YOUR-STORAGE-ACCOUNT-KEY>
