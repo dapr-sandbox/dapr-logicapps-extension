@@ -5,23 +5,23 @@
 
 namespace Dapr.Workflows.Workflow
 {
-    using System.Threading.Tasks;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
     using System.Net.Http;
+    using System.Threading;
+    using System.Threading.Tasks;
+    using Dapr.Client.Autogen.Grpc.v1;
+    using Google.Protobuf;
+    using Google.Protobuf.WellKnownTypes;
+    using Grpc.Core;
+    using Microsoft.Azure.Workflows.Common.Constants;
+    using Microsoft.Azure.Workflows.Data;
+    using Microsoft.Azure.Workflows.Data.Configuration;
     using Microsoft.Azure.Workflows.Data.Entities;
     using Microsoft.Azure.Workflows.Templates.Extensions;
-    using System.Linq;
-    using Microsoft.Azure.Workflows.Data.Configuration;
-    using System.Threading;
-    using Microsoft.Azure.Workflows.Common.Constants;
     using Microsoft.WindowsAzure.ResourceStack.Common.Extensions;
     using Microsoft.WindowsAzure.ResourceStack.Common.Instrumentation;
-    using System.Collections.Generic;
-    using System;
-    using Google.Protobuf.WellKnownTypes;
-    using Google.Protobuf;
-    using Grpc.Core;
-    using Microsoft.Azure.Workflows.Data;
-    using Dapr.Client.Autogen.Grpc.v1;
 
 
     public class DaprWorkflowExecutor : DaprClient.DaprClientBase
@@ -114,7 +114,7 @@ namespace Dapr.Workflows.Workflow
 
         private async Task<string> CallWorkflow(WorkflowConfig workflow)
         {
-            var req = new HttpRequestMessage(HttpMethod.Get, "http://localhost/workflow");
+            var req = new HttpRequestMessage(HttpMethod.Get, $"http://localhost/{workflow.Name}");
             var flowConfig = this.workflowEngine.Config;
             var flowName = workflow.Name;
 
@@ -147,18 +147,20 @@ namespace Dapr.Workflows.Workflow
                 }
                 else
                 {
-                    var triggerOutput = this.workflowEngine.Engine.GetFlowHttpEngine().GetOperationOutput(req, flowConfig.EventSource, ct).Result;
+                    var triggerOutput = await this.workflowEngine.Engine.GetFlowHttpEngine().GetOperationOutput(req, flowConfig.EventSource, ct);
+
                     var resp = await this.workflowEngine.Engine
-                                                .RunFlowPushTrigger(
-                                                    request: req,
-                                                    context: new FlowDataPlaneContext(flow),
-                                                    trigger: trigger,
-                                                    subscriptionId: EdgeFlowConfiguration.EdgeSubscriptionId,
-                                                    resourceGroup: EdgeFlowConfiguration.EdgeResourceGroupName,
-                                                    flowName: flowName,
-                                                    triggerName: triggerName,
-                                                    triggerOutput: triggerOutput,
-                                                    clientCancellationToken: ct);
+                        .RunFlowPushTrigger(
+                            request: req,
+                            context: new FlowDataPlaneContext(flow),
+                            trigger: trigger,
+                            subscriptionId: EdgeFlowConfiguration.EdgeSubscriptionId,
+                            resourceGroup: EdgeFlowConfiguration.EdgeResourceGroupName,
+                            flowName: flowName,
+                            triggerName: triggerName,
+                            triggerOutput: triggerOutput,
+                            clientCancellationToken: ct);
+
                     return await resp.Content.ReadAsStringAsync();
                 }
             }
