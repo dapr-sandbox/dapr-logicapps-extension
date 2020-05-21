@@ -112,7 +112,7 @@ Wait until the Dapr pods have the status `Running`.
 #### Create a Config Map for the workflow
 
 ```
-kubectl create configmap workflows --from-file workflow1.json
+kubectl create configmap workflows --from-file ./samples/workflow1.json
 ```
 
 #### Create a secret containing the Azure Storage Account credentials
