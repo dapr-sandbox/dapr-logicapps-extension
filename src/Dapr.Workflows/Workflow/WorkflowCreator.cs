@@ -11,15 +11,14 @@ namespace Dapr.Workflows.Workflow
     using Dapr.Workflows.Configuration;
     using Microsoft.Azure.Workflows.Data.Configuration;
     using Microsoft.Azure.Workflows.Data.Definitions;
-    using Microsoft.Azure.Workflows.Worker;
-    using Microsoft.WindowsAzure.ResourceStack.Common.Services;
-    using Newtonsoft.Json;
     using Microsoft.Azure.Workflows.Common.Constants;
+    using Microsoft.Azure.Workflows.Common.Extensions;
     using Microsoft.Azure.Workflows.Data.Engines;
     using Microsoft.Azure.Workflows.Web.Engines;
-    using Microsoft.Azure.Workflows.Common.Extensions;
-    using Microsoft.Azure.Workflows.Worker.Jobs;
+    using Microsoft.Azure.Workflows.Worker;
     using Microsoft.Azure.Workflows.Worker.Dispatcher;
+    using Microsoft.WindowsAzure.ResourceStack.Common.Services;
+    using Newtonsoft.Json;
 
     public class WorkflowEngine
     {
@@ -90,13 +89,11 @@ namespace Dapr.Workflows.Workflow
                 httpConfiguration: httpConfig);
 
             var callbackFactory = new FlowJobsCallbackFactory(
-                            flowConfiguration: flowConfig,
-                            httpConfiguration: httpConfig,
-                            requestPipeline: null);
+                flowConfiguration: flowConfig,
+                httpConfiguration: httpConfig,
+                requestPipeline: null);
 
-            flowConfig.InitializeFlowJobCallbackConfiguration(
-                jobCallbackFactory: callbackFactory,
-                jobCallbackAssemblies: new[] { typeof(FlowJobCallback<>).Assembly, typeof(ServiceProviderActionJob).Assembly });
+            flowConfig.InitializeFlowJobCallbackConfiguration(callbackFactory);
 
             dispatcher.Start();
             dispatcher.ProvisionSystemJobs();
