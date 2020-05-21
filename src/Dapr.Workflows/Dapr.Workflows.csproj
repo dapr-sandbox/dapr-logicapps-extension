@@ -15,8 +15,8 @@
     <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     <PrivateAssets>all</PrivateAssets>
   </PackageReference>
-  <PackageReference Include="Microsoft.Azure.Workflows.Client" Version="1.0.0.10484-prerelease" />
-  <PackageReference Include="Microsoft.Azure.Workflows.Runtime" Version="1.0.0.10484-prerelease" />
+  <PackageReference Include="Microsoft.Azure.Workflows.Client" Version="1.0.0.1-preview" />
+  <PackageReference Include="Microsoft.Azure.Workflows.Runtime" Version="1.0.0.1-preview" />
 </ItemGroup>
  <ItemGroup>
     <Protobuf Include="**/*.proto" />
