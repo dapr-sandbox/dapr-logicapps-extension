@@ -19,7 +19,7 @@ on:
 
 jobs:
   build:
-    name: build-dapr-workflows
+    name: Build & Test
     runs-on: ubuntu-latest
 
     steps:
@@ -35,7 +35,7 @@ jobs:
       - name: Test
         run: dotnet test --no-restore --verbosity normal
   publish:
-    name: Publish to daprio
+    name: Publish docker image to daprio
     if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     env:
@@ -60,7 +60,7 @@ jobs:
           docker login -u ${{ secrets.DOCKER_REGISTRY_ID }} -p ${{ secrets.DOCKER_REGISTRY_PASS }}
       - name: Build docker image
         run: |
-          docker build -t ${{ env.WORKFLOW_REGISTRY }}/${{ env.WORKFLOW_IMAGE }}:$REL_VERSION .
+          docker build -t ${{ env.WORKFLOWS_REGISTRY }}/${{ env.WORKFLOWS_IMAGE }}:$REL_VERSION .
       - name: Push dockerhub
         run: |
-          docker push ${{ env.WORKFLOW_REGISTRY }}/${{ env.WORKFLOW_IMAGE }}:$REL_VERSION
+          docker push ${{ env.WORKFLOWS_REGISTRY }}/${{ env.WORKFLOWS_IMAGE }}:$REL_VERSION
