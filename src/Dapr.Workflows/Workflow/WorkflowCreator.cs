@@ -19,6 +19,9 @@ namespace Dapr.Workflows.Workflow
     using Microsoft.Azure.Workflows.Worker.Dispatcher;
     using Microsoft.WindowsAzure.ResourceStack.Common.Services;
     using Newtonsoft.Json;
+    using System.Linq;
+    using Microsoft.AspNetCore.Mvc.Infrastructure;
+    using Microsoft.WindowsAzure.ResourceStack.Common.Extensions;
 
     public class WorkflowEngine
     {
@@ -48,7 +51,8 @@ namespace Dapr.Workflows.Workflow
 
             foreach (var dir in Directory.EnumerateDirectories(workflowsDir))
             {
-                var workflowFileInfo = new FileInfo(Path.Combine(workflowsDir, dir, "workflow.json"));
+                ////var files = Directory.EnumerateFiles(dir);
+                var workflowFileInfo = new FileInfo(Path.Combine(dir, "workflow.json"));
                 Console.WriteLine($"Loading workflow: {workflowFileInfo.FullName}");
 
                 var workflowJson = File.ReadAllText(workflowFileInfo.FullName);
@@ -56,7 +60,7 @@ namespace Dapr.Workflows.Workflow
                 var def = new FlowDefinition(FlowConstants.GeneralAvailabilitySchemaVersion);
                 def.Properties = workflowDef;
 
-                var flowName = dir;
+                var flowName = Path.GetFileName(dir);
                 engine.ValidateAndCreateFlow(flowName, def.Properties).Wait();
                 Console.WriteLine("Flow Created");
                 yield return new WorkflowConfig(flowName, def);
