@@ -22,6 +22,8 @@ namespace Dapr.Workflows.Workflow
     using System.Linq;
     using Microsoft.AspNetCore.Mvc.Infrastructure;
     using Microsoft.WindowsAzure.ResourceStack.Common.Extensions;
+    using Microsoft.Azure.Workflows.Data.Utilities;
+    using Microsoft.Azure.Workflows.Data.Extensions;
 
     public class WorkflowEngine
     {
@@ -51,7 +53,13 @@ namespace Dapr.Workflows.Workflow
 
             foreach (var dir in Directory.EnumerateDirectories(workflowsDir))
             {
-                ////var files = Directory.EnumerateFiles(dir);
+                var connectionFileInfo = new FileInfo(Path.Combine(dir, "connections.json"));
+                if (connectionFileInfo.Exists)
+                {
+                    var connectionDetails = FileUtility.GetEdgeConnectionsDetails(connectionFileInfo.FullName).Result;
+                    engine.GetConnectionCacheProvider().SetServiceProviderConnections(connectionDetails.ServiceProviderConnections);
+                }
+
                 var workflowFileInfo = new FileInfo(Path.Combine(dir, "workflow.json"));
                 Console.WriteLine($"Loading workflow: {workflowFileInfo.FullName}");
 
