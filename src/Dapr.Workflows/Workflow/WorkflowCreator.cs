@@ -7,7 +7,6 @@ namespace Dapr.Workflows.Workflow
 {
     using System;
     using System.Collections.Generic;
-    using System.Diagnostics;
     using System.IO;
     using System.Net.Http.Formatting;
     using System.Reflection;
@@ -48,9 +47,6 @@ namespace Dapr.Workflows.Workflow
     {
         public static IEnumerable<WorkflowConfig> LoadWorkflows(string workflowsDir, EdgeFlowWebManagementEngine engine)
         {
-            var consoleTraceListener = new ConsoleTraceListener();
-            Trace.Listeners.Add(consoleTraceListener);
-
             if (!Directory.Exists(workflowsDir))
             {
                 throw new DirectoryNotFoundException($"Couldn't find workflow directory {workflowsDir}");
