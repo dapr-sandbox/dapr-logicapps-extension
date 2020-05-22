@@ -143,6 +143,7 @@ namespace Dapr.Workflows.Workflow
                             flow: flow,
                             flowName: flowName,
                             triggerName: triggerName);
+
                     return "";
                 }
                 else

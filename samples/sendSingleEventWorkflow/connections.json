@@ -1,0 +1,12 @@
+{
+    "serviceProviderConnections": {
+      "eventHubConnectionString": {
+        "parameterValues": {
+          "connectionString": "<put-your-event-hub-connection-string-here>"
+        },
+        "serviceProvider": {
+          "id": "ServiceProviders/EventHubs"
+        }
+      }
+    }
+  }

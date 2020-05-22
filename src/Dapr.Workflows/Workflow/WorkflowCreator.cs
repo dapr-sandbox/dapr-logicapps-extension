@@ -6,24 +6,26 @@
 namespace Dapr.Workflows.Workflow
 {
     using System;
-    using System.IO;
     using System.Collections.Generic;
+    using System.Diagnostics;
+    using System.IO;
+    using System.Net.Http.Formatting;
+    using System.Reflection;
+    using System.Web.Http;
     using Dapr.Workflows.Configuration;
-    using Microsoft.Azure.Workflows.Data.Configuration;
-    using Microsoft.Azure.Workflows.Data.Definitions;
     using Microsoft.Azure.Workflows.Common.Constants;
     using Microsoft.Azure.Workflows.Common.Extensions;
+    using Microsoft.Azure.Workflows.Data.Configuration;
+    using Microsoft.Azure.Workflows.Data.Definitions;
     using Microsoft.Azure.Workflows.Data.Engines;
+    using Microsoft.Azure.Workflows.Data.Extensions;
+    using Microsoft.Azure.Workflows.Data.Utilities;
     using Microsoft.Azure.Workflows.Web.Engines;
     using Microsoft.Azure.Workflows.Worker;
     using Microsoft.Azure.Workflows.Worker.Dispatcher;
+    using Microsoft.WindowsAzure.ResourceStack.Common.Extensions;
     using Microsoft.WindowsAzure.ResourceStack.Common.Services;
     using Newtonsoft.Json;
-    using System.Linq;
-    using Microsoft.AspNetCore.Mvc.Infrastructure;
-    using Microsoft.WindowsAzure.ResourceStack.Common.Extensions;
-    using Microsoft.Azure.Workflows.Data.Utilities;
-    using Microsoft.Azure.Workflows.Data.Extensions;
 
     public class WorkflowEngine
     {
@@ -46,6 +48,9 @@ namespace Dapr.Workflows.Workflow
     {
         public static IEnumerable<WorkflowConfig> LoadWorkflows(string workflowsDir, EdgeFlowWebManagementEngine engine)
         {
+            var consoleTraceListener = new ConsoleTraceListener();
+            Trace.Listeners.Add(consoleTraceListener);
+
             if (!Directory.Exists(workflowsDir))
             {
                 throw new DirectoryNotFoundException($"Couldn't find workflow directory {workflowsDir}");
@@ -85,12 +90,18 @@ namespace Dapr.Workflows.Workflow
             CloudConfigurationManager.Instance = (IConfigurationManager)workflowConfig;
 
             Console.WriteLine("Creating Edge Configuration");
-            var flowConfig = new EdgeFlowConfiguration(CloudConfigurationManager.Instance as Microsoft.WindowsAzure.ResourceStack.Common.Services.AzureConfigurationManager);
+            var flowConfig = new EdgeFlowConfiguration(CloudConfigurationManager.Instance as AzureConfigurationManager);
             flowConfig.Initialize().Wait();
             flowConfig.EnsureInitialized();
 
-            var httpConfig = new System.Web.Http.HttpConfiguration();
-            httpConfig.Formatters = new System.Net.Http.Formatting.MediaTypeFormatterCollection();
+            var serviceProviderAssemblies = CloudConfigurationManager
+                .GetMultivaluedConfiguration("Microsoft.Azure.Workflows.ServiceProviders.Assemblies")
+                .SelectArray(assemblyName => Assembly.Load(assemblyName));
+
+            flowConfig.SetServiceOperationsProviderAndRegisterAssemblies(assemblies: serviceProviderAssemblies, context: null);
+
+            var httpConfig = new HttpConfiguration();
+            httpConfig.Formatters = new MediaTypeFormatterCollection();
             httpConfig.Formatters.Add(FlowJsonExtensions.JsonMediaTypeFormatter);
 
             var edgeEngine = new EdgeManagementEngine(flowConfig, httpConfig);
