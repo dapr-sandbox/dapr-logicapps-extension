@@ -2,9 +2,15 @@ name: build
 
 on:
   push:
-    branches: [ master ]
+    branches:
+      - master
+      - release-*
+    tags:
+      - v*
   pull_request:
-    branches: [ master ]
+    branches:
+      - master
+      - release-*
 
 jobs:
   build:
@@ -12,14 +18,44 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Setup .NET Core
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: 3.1.101
-    - name: Install dependencies
-      run: dotnet restore
-    - name: Build
-      run: dotnet build --configuration Release --no-restore
-    - name: Test
-      run: dotnet test --no-restore --verbosity normal
+      - uses: actions/checkout@v2
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 3.1.101
+      - name: Install dependencies
+        run: dotnet restore
+      - name: Build
+        run: dotnet build --configuration Release --no-restore
+      - name: Test
+        run: dotnet test --no-restore --verbosity normal
+  publish:
+    name: Publish to daprio
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    env:
+      WORKFLOWS_REGISTRY: ${{ secrets.DOCKER_DAPRIO_REGISTRY }}
+      WORKFLOWS_IMAGE: workflows
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: set verision to edge
+        if: not startswith(github.ref, 'refs/tags/v')
+        run: |
+          echo ##[set-env name=REL_VERSION;]edge
+      - name: extract version from tags
+        if: startswith(github.ref, 'refs/tags/v')
+        run: |
+          VER_TAG_PREFIX="refs/tags/v"
+          PARSED_VER=${GITHUB_REF/#$VER_TAG_PREFIX}
+          echo Parsed version: $PARSED_VER
+          echo ##[set-env name=REL_VERSION;]$PARSED_VER
+      - name: docker login
+        run: |
+          docker login -u ${{ secrets.DOCKER_REGISTRY_ID }} -p ${{ secrets.DOCKER_REGISTRY_PASS }}
+      - name: Build docker image
+        run: |
+          docker build -t ${{ env.WORKFLOW_REGISTRY }}/${{ env.WORKFLOW_IMAGE }}:$REL_VERSION .
+      - name: Push dockerhub
+        run: |
+          docker push ${{ env.WORKFLOW_REGISTRY }}/${{ env.WORKFLOW_IMAGE }}:$REL_VERSION
