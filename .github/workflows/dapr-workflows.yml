@@ -45,7 +45,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: set verision to edge
-        if: !startswith(github.ref, 'refs/tags/v')
+        if: startswith(github.ref, 'refs/tags/v') == false
         run: |
           echo ##[set-env name=REL_VERSION;]edge
       - name: extract version from tags
