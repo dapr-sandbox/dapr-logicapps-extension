@@ -36,6 +36,7 @@ jobs:
         run: dotnet test --no-restore --verbosity normal
   publish:
     name: Publish docker image
+    needs: build
     if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     env:
