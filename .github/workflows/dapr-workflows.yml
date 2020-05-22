@@ -35,7 +35,7 @@ jobs:
       - name: Test
         run: dotnet test --no-restore --verbosity normal
   publish:
-    name: Publish docker image to daprio
+    name: Publish docker image
     if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     env:
@@ -47,14 +47,14 @@ jobs:
       - name: set verision to edge
         if: startswith(github.ref, 'refs/tags/v') == false
         run: |
-          echo ##[set-env name=REL_VERSION;]edge
+          echo "##[set-env name=REL_VERSION;]edge"
       - name: extract version from tags
         if: startswith(github.ref, 'refs/tags/v')
         run: |
           VER_TAG_PREFIX="refs/tags/v"
           PARSED_VER=${GITHUB_REF/#$VER_TAG_PREFIX}
           echo Parsed version: $PARSED_VER
-          echo ##[set-env name=REL_VERSION;]$PARSED_VER
+          echo "##[set-env name=REL_VERSION;]$PARSED_VER"
       - name: docker login
         run: |
           docker login -u ${{ secrets.DOCKER_REGISTRY_ID }} -p ${{ secrets.DOCKER_REGISTRY_PASS }}
