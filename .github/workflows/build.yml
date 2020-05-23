@@ -84,7 +84,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ github.ref }}
-          release_name: Release ${{ env.REL_VERSION }}
+          release_name: Dapr Workflow v${{ env.REL_VERSION }}
           draft: false
           prerelease: true
       - name: Upload Release Asset
