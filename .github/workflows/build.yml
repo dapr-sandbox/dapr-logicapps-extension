@@ -30,10 +30,15 @@ jobs:
           dotnet-version: 3.1.101
       - name: Install dependencies
         run: dotnet restore
-      - name: Build
-        run: dotnet build --configuration Release --no-restore
       - name: Test
         run: dotnet test --no-restore --verbosity normal
+      - name: Build
+        run: dotnet build --configuration Release --no-restore -o out
+      - name: Upload binaries
+        uses: actions/upload-artifact@v2
+        with: 
+          name: dapr-workflow
+          path: out/*
   publish:
     name: Publish docker image
     needs: build
@@ -65,3 +70,30 @@ jobs:
       - name: Push dockerhub
         run: |
           docker push ${{ env.WORKFLOWS_REGISTRY }}/${{ env.WORKFLOWS_IMAGE }}:$REL_VERSION
+      - uses: actions/download-artifact@v2
+        with:
+          name: dapr-workflow
+          path: out/
+      - name: archieve binaries
+        run: |
+          cd out && zip ../dapr_workflow_${REL_VERSION}.zip *
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ env.REL_VERSION }}
+          draft: false
+          prerelease: true
+      - name: Upload Release Asset
+        id: upload-release-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./dapr_workflow_${{ env.REL_VERSION }}.zip
+          asset_name: dapr_workflow_${{ env.REL_VERSION }}.zip
+          asset_content_type: application/zip
