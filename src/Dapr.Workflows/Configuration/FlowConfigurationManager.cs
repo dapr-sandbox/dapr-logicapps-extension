@@ -1,22 +1,22 @@
-﻿
+﻿// ------------------------------------------------------------
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+// ------------------------------------------------------------
 
-using System.Collections;
-using System.Configuration;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Resources;
-using System.Xml;
-using System.Xml.Linq;
-using System.Xml.XPath;
-using Dapr.Workflows.Workflow;
-using Microsoft.WindowsAzure.ResourceStack.Common.Services;
-using System.Diagnostics;
 
 namespace Dapr.Workflows.Configuration
 {
+    using System.Collections;
+    using System.Collections.Generic;
+    using System.Configuration;
+    using System.IO;
+    using System.Linq;
+    using System.Xml;
+    using System.Xml.Linq;
+    using System.Xml.XPath;
+    using Dapr.Workflows.Workflow;
+    using Microsoft.WindowsAzure.ResourceStack.Common.Services;
+
     public class FlowConfigurationManager : AzureConfigurationManager
     {
         /// <summary>Gets or sets the XML application settings.</summary>
