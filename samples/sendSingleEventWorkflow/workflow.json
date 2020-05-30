@@ -6,9 +6,9 @@
           "type": "ServiceProvider",
           "inputs": {
             "parameters": {
-              "eventHubName": "myhub01",
+              "eventHubName": "<event-hub-name>",
               "eventData": {
-                "contentData": "foobar-content"
+                "contentData": "<event-content>"
               }
             },
             "serviceProviderConfiguration": {

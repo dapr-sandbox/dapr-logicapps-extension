@@ -2,7 +2,7 @@
     "serviceProviderConnections": {
       "eventHubConnectionString": {
         "parameterValues": {
-          "connectionString": "Endpoint=sb://laveeshb-demo-eh-01.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=N5JPmZUXcDMVDZDEiJw65JMoVQ6VtMYWkI31NnOMnZA="
+          "connectionString": "<event-hub-connection-string>"
         },
         "serviceProvider": {
           "id": "ServiceProviders/EventHubs"
