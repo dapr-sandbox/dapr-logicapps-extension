@@ -46,7 +46,7 @@ Dapr Workflows can be used as the orchestrator for many otherwise complex activi
 
 This is due to the fact Dapr runs as a sidecar next to the workflow host just as if it was any other app.
 
-Examine [workflow2.json](./samples/workflow2/workflow.json) as an example of a workflow that does the following:
+Examine [workflow2](./samples/workflow2/workflow.json) as an example of a workflow that does the following:
 
 1. Calls into Azure Functions to get a JSON response
 2. Saves the result to a Dapr state store
