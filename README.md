@@ -40,11 +40,13 @@ Once a workflow request comes in, Dapr Workflows uses the Logic Apps SDK to exec
 
 ## Example
 
+### Native operations
+
 Dapr Workflows can be used as the orchestrator for many otherwise complex activities. For example, invoking an external endpoint, saving the data to a state store, publishing the result to a different app or invoking a binding can all be done by calling back into Dapr from the workflow itself.
 
 This is due to the fact Dapr runs as a sidecar next to the workflow host just as if it was any other app.
 
-Examine [workflow2.json](./samples/workflow2.json) as an example of a workflow that does the following:
+Examine [workflow2.json](./samples/workflow2/workflow.json) as an example of a workflow that does the following:
 
 1. Calls into Azure Functions to get a JSON response
 2. Saves the result to a Dapr state store
@@ -52,6 +54,20 @@ Examine [workflow2.json](./samples/workflow2.json) as an example of a workflow t
 4. Returns the result to the caller
 
 Since Dapr supports many pluggable state stores and bindings, the workflow becomes portable between different environments (cloud, edge or on-premises) without the user changing the code - *because there is no code involved*.
+
+### Managed connectors
+
+Dapr workflows can use managed connectors provided by logic apps to connect to external services. 
+[Here](./samples/sendSingleEventWorkflow/workflow.json) is an example where a workflow calls into an event hub namespace to queue events.
+
+To run this workflow, you will need the an Azure event hub namespace and an event hub in that namespace.
+Please update the workflow with your event hub properties.
+
+1. Update `<event-hub-connection-string>` [here](./samples/sendSingleEventWorkflow/connections.json#L5) with connection string of your event hub namespace.
+2. Update `<event-hub-name>` [here](./samples/sendSingleEventWorkflow/workflow.json#L9) with your event hub name.
+3. Update `<event-content>` [here](./samples/sendSingleEventWorkflow/workflow.json#L11) with the event content you want to send.
+
+Run the workflow
 
 ## Get Started
 
@@ -128,7 +144,7 @@ Replace the account name and key values below with the actual credentials:
 kubectl create secret generic dapr-workflows --from-literal=accountName=<YOUR-STORAGE-ACCOUNT-NAME> --from-literal=accountKey=<YOUR-STORAGE-ACCOUNT-KEY>
 ```
 
-#### Deploy Dapr Worfklows
+#### Deploy Dapr Workflows
 
 ```
 kubectl apply -f deploy/deploy.yaml
@@ -218,9 +234,9 @@ kubectl logs -l app=dapr-workflows-host -c host
 
 * [All Data Operations](https://docs.microsoft.com/en-us/azure/connectors/apis-list#manage-or-manipulate-data)
 
-### Not supported
+### Supported connectors
 
-* [Managed Connectors](https://docs.microsoft.com/en-us/azure/connectors/apis-list#managed-connectors)
+* [Azure Event Hubs](https://docs.microsoft.com/en-us/azure/connectors/connectors-create-api-azure-event-hubs)
 
 ## Build
 
