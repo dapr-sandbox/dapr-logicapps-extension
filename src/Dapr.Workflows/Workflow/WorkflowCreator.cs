@@ -6,23 +6,17 @@
 namespace Dapr.Workflows.Workflow
 {
     using System;
-    using System.Collections.Generic;
     using System.IO;
-    using System.Net.Http.Formatting;
-    using System.Reflection;
-    using System.Web.Http;
+    using System.Collections.Generic;
     using Dapr.Workflows.Configuration;
-    using Microsoft.Azure.Workflows.Common.Constants;
-    using Microsoft.Azure.Workflows.Common.Extensions;
     using Microsoft.Azure.Workflows.Data.Configuration;
     using Microsoft.Azure.Workflows.Data.Definitions;
+    using Microsoft.Azure.Workflows.Common.Constants;
+    using Microsoft.Azure.Workflows.Common.Extensions;
     using Microsoft.Azure.Workflows.Data.Engines;
-    using Microsoft.Azure.Workflows.Data.Extensions;
-    using Microsoft.Azure.Workflows.Data.Utilities;
     using Microsoft.Azure.Workflows.Web.Engines;
     using Microsoft.Azure.Workflows.Worker;
     using Microsoft.Azure.Workflows.Worker.Dispatcher;
-    using Microsoft.WindowsAzure.ResourceStack.Common.Extensions;
     using Microsoft.WindowsAzure.ResourceStack.Common.Services;
     using Newtonsoft.Json;
 
@@ -52,24 +46,17 @@ namespace Dapr.Workflows.Workflow
                 throw new DirectoryNotFoundException($"Couldn't find workflow directory {workflowsDir}");
             }
 
-            foreach (var dir in Directory.EnumerateDirectories(workflowsDir))
+            foreach (var file in Directory.EnumerateFiles(workflowsDir))
             {
-                var connectionFileInfo = new FileInfo(Path.Combine(dir, "connections.json"));
-                if (connectionFileInfo.Exists)
-                {
-                    var connectionDetails = FileUtility.GetEdgeConnectionsDetails(connectionFileInfo.FullName).Result;
-                    engine.GetConnectionCacheProvider().SetServiceProviderConnections(connectionDetails.ServiceProviderConnections);
-                }
+                var fi = new FileInfo(file);
+                Console.WriteLine($"Loading workflow: {fi.Name}");
 
-                var workflowFileInfo = new FileInfo(Path.Combine(dir, "workflow.json"));
-                Console.WriteLine($"Loading workflow: {workflowFileInfo.FullName}");
-
-                var workflowJson = File.ReadAllText(workflowFileInfo.FullName);
+                var workflowJson = File.ReadAllText(fi.FullName);
                 var workflowDef = JsonConvert.DeserializeObject<FlowPropertiesDefinition>(workflowJson);
                 var def = new FlowDefinition(FlowConstants.GeneralAvailabilitySchemaVersion);
                 def.Properties = workflowDef;
 
-                var flowName = Path.GetFileName(dir);
+                var flowName = Path.GetFileNameWithoutExtension(fi.FullName);
                 engine.ValidateAndCreateFlow(flowName, def.Properties).Wait();
                 Console.WriteLine("Flow Created");
                 yield return new WorkflowConfig(flowName, def);
@@ -86,18 +73,12 @@ namespace Dapr.Workflows.Workflow
             CloudConfigurationManager.Instance = (IConfigurationManager)workflowConfig;
 
             Console.WriteLine("Creating Edge Configuration");
-            var flowConfig = new EdgeFlowConfiguration(CloudConfigurationManager.Instance as AzureConfigurationManager);
+            var flowConfig = new EdgeFlowConfiguration(CloudConfigurationManager.Instance as Microsoft.WindowsAzure.ResourceStack.Common.Services.AzureConfigurationManager);
             flowConfig.Initialize().Wait();
             flowConfig.EnsureInitialized();
 
-            var serviceProviderAssemblies = CloudConfigurationManager
-                .GetMultivaluedConfiguration("Microsoft.Azure.Workflows.ServiceProviders.Assemblies")
-                .SelectArray(assemblyName => Assembly.Load(assemblyName));
-
-            flowConfig.SetServiceOperationsProviderAndRegisterAssemblies(assemblies: serviceProviderAssemblies, context: null);
-
-            var httpConfig = new HttpConfiguration();
-            httpConfig.Formatters = new MediaTypeFormatterCollection();
+            var httpConfig = new System.Web.Http.HttpConfiguration();
+            httpConfig.Formatters = new System.Net.Http.Formatting.MediaTypeFormatterCollection();
             httpConfig.Formatters.Add(FlowJsonExtensions.JsonMediaTypeFormatter);
 
             var edgeEngine = new EdgeManagementEngine(flowConfig, httpConfig);
