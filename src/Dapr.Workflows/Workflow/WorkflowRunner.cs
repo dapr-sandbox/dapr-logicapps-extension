@@ -21,10 +21,10 @@ namespace Dapr.Workflows.Workflow
     using Google.Protobuf;
     using Grpc.Core;
     using Microsoft.Azure.Workflows.Data;
+    using AppCallback.Autogen.Grpc.v1;
     using Dapr.Client.Autogen.Grpc.v1;
 
-
-    public class DaprWorkflowExecutor : DaprClient.DaprClientBase
+    public class DaprWorkflowExecutor : AppCallback.AppCallbackBase
     {
         private List<WorkflowConfig> workflows;
         private WorkflowEngine workflowEngine;
@@ -35,7 +35,7 @@ namespace Dapr.Workflows.Workflow
             this.workflowEngine = workflowEngine;
         }
 
-        public override Task<Empty> OnTopicEvent(CloudEventEnvelope request, Grpc.Core.ServerCallContext context)
+        public override Task<Empty> OnTopicEvent(TopicEventRequest request, Grpc.Core.ServerCallContext context)
         {
             return Task.FromResult(new Empty());
         }
@@ -77,14 +77,14 @@ namespace Dapr.Workflows.Workflow
             return any;
         }
 
-        public override Task<GetTopicSubscriptionsEnvelope> GetTopicSubscriptions(Empty request, Grpc.Core.ServerCallContext context)
+        public override Task<ListTopicSubscriptionsResponse> ListTopicSubscriptions(Empty request, Grpc.Core.ServerCallContext context)
         {
-            return Task.FromResult(new GetTopicSubscriptionsEnvelope());
+            return Task.FromResult(new ListTopicSubscriptionsResponse());
         }
 
-        public override Task<GetBindingsSubscriptionsEnvelope> GetBindingsSubscriptions(Empty request, Grpc.Core.ServerCallContext context)
+        public override Task<ListInputBindingsResponse> ListInputBindings(Empty request, Grpc.Core.ServerCallContext context)
         {
-            var envelope = new GetBindingsSubscriptionsEnvelope();
+            var envelope = new ListInputBindingsResponse();
             this.workflows.ForEach(w =>
             {
                 envelope.Bindings.Add(w.Name);
@@ -92,7 +92,7 @@ namespace Dapr.Workflows.Workflow
             return Task.FromResult(envelope);
         }
 
-        public async override Task<BindingResponseEnvelope> OnBindingEvent(BindingEventEnvelope request, Grpc.Core.ServerCallContext context)
+        public async override Task<BindingEventResponse> OnBindingEvent(BindingEventRequest request, Grpc.Core.ServerCallContext context)
         {
             if (!WorkflowExists(request.Name))
             {
@@ -102,7 +102,7 @@ namespace Dapr.Workflows.Workflow
             var response = await ExecuteWorkflow(request.Name);
             Console.WriteLine(response.Value.ToStringUtf8());
 
-            return new BindingResponseEnvelope() { Data = response };
+            return new BindingEventResponse() { Data = response.Value };
         }
 
         private async Task<Flow> FindExistingFlow(string flowName)
