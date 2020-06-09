@@ -11,7 +11,7 @@ namespace Dapr.Workflows
     using Grpc.Core;
     using System.Threading.Tasks;
     using Dapr.Workflows.Workflow;
-    using Dapr.Client.Autogen.Grpc.v1;
+    using AppCallback.Autogen.Grpc.v1;
 
     class Program
     {
@@ -64,11 +64,11 @@ namespace Dapr.Workflows
 
             // Load and register workflows
             var workflows = WorkflowCreator.LoadWorkflows(workflowPath, workflowEngine.Engine);
-
+    
             // Start and register Dapr gRPC app
             var server = new Server
             {
-                Services = { DaprClient.BindService(new DaprWorkflowExecutor(workflows, workflowEngine)) },
+                Services = { AppCallback.BindService(new DaprWorkflowExecutor(workflows, workflowEngine)) },
                 Ports = { new ServerPort("localhost", ServerPort, ServerCredentials.Insecure) }
             };
 
