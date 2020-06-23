@@ -23,6 +23,7 @@ namespace Dapr.Workflows.Workflow
     using Microsoft.Azure.Workflows.Data;
     using AppCallback.Autogen.Grpc.v1;
     using Dapr.Client.Autogen.Grpc.v1;
+    using System.Text;
 
     public class DaprWorkflowExecutor : AppCallback.AppCallbackBase
     {
@@ -47,7 +48,8 @@ namespace Dapr.Workflows.Workflow
                 throw new RpcException(new Status(StatusCode.InvalidArgument, $"Worflow with name {request.Method} was not found"));
 
             }
-            var resp = await ExecuteWorkflow(request.Method);
+
+            var resp = await ExecuteWorkflow(request.Method, request.Data.Value);
             return new InvokeResponse()
             {
                 Data = resp,
@@ -59,14 +61,14 @@ namespace Dapr.Workflows.Workflow
             return this.workflows.Any(w => w.Name == name);
         }
 
-        private async Task<Any> ExecuteWorkflow(string name)
+        private async Task<Any> ExecuteWorkflow(string name, ByteString data)
         {
             var any = new Any();
 
             try
             {
                 var workflowConfig = this.workflows.First(w => w.Name == name);
-                var response = await CallWorkflow(workflowConfig);
+                var response = await CallWorkflow(workflowConfig, data);
                 any.Value = ByteString.CopyFromUtf8(response);
             }
             catch (Exception ex)
@@ -99,7 +101,7 @@ namespace Dapr.Workflows.Workflow
                 throw new RpcException(new Status(StatusCode.InvalidArgument, $"Worflow with name {request.Name} was not found"));
 
             }
-            var response = await ExecuteWorkflow(request.Name);
+            var response = await ExecuteWorkflow(request.Name, request.Data);
             Console.WriteLine(response.Value.ToStringUtf8());
 
             return new BindingEventResponse() { Data = response.Value };
@@ -112,9 +114,12 @@ namespace Dapr.Workflows.Workflow
                 .FindFlowByName(subscriptionId: EdgeFlowConfiguration.EdgeSubscriptionId, resourceGroup: EdgeFlowConfiguration.EdgeResourceGroupName, flowName: flowName);
         }
 
-        private async Task<string> CallWorkflow(WorkflowConfig workflow)
+        private async Task<string> CallWorkflow(WorkflowConfig workflow, ByteString data)
         {
-            var req = new HttpRequestMessage(HttpMethod.Get, "http://localhost/workflow");
+            var req = new HttpRequestMessage(HttpMethod.Post, "http://localhost/workflow");
+            var content = new System.Net.Http.StringContent(data.ToStringUtf8(), Encoding.UTF8, "application/json");
+            req.Content = content;
+            
             var flowConfig = this.workflowEngine.Config;
             var flowName = workflow.Name;
 
