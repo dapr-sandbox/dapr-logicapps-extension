@@ -21,7 +21,7 @@ spec:
     spec:
       containers:
       - name: host
-        image: daprio/workflows:0.2.0
+        image: daprio/workflows:0.2.1
         env:
         - name: STORAGE_ACCOUNT_KEY
           valueFrom:
