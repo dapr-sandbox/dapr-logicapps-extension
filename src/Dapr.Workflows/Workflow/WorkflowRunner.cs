@@ -36,9 +36,9 @@ namespace Dapr.Workflows.Workflow
             this.workflowEngine = workflowEngine;
         }
 
-        public override Task<Empty> OnTopicEvent(TopicEventRequest request, Grpc.Core.ServerCallContext context)
+        public override Task<TopicEventResponse> OnTopicEvent(TopicEventRequest request, Grpc.Core.ServerCallContext context)
         {
-            return Task.FromResult(new Empty());
+            return Task.FromResult(new TopicEventResponse());
         }
 
         public async override Task<InvokeResponse> OnInvoke(InvokeRequest request, Grpc.Core.ServerCallContext context)

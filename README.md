@@ -60,7 +60,7 @@ Prerequisites:
 1. Install the [Dapr CLI](https://github.com/dapr/cli#getting-started)
 2. [Azure Blob Storage Account](https://docs.microsoft.com/en-us/azure/storage/blobs/storage-blob-create-account-block-blob?tabs=azure-portal)
 
-**Supported Dapr Version: 0.8.0 and above**
+**Supported Dapr Version: 0.10.0 and above**
 
 ### Self hosted (running locally)
 
