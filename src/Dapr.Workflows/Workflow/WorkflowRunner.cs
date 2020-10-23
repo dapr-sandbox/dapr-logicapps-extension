@@ -164,7 +164,13 @@ namespace Dapr.Workflows.Workflow
                                                     triggerName: triggerName,
                                                     triggerOutput: triggerOutput,
                                                     clientCancellationToken: ct);
-                    return await resp.Content.ReadAsStringAsync();
+
+                    var returnContent = await resp.Content.ReadAsStringAsync();
+                    if (!resp.IsSuccessStatusCode)
+                    {
+                        Console.WriteLine($"Error invoking workflow. Status code: {0}. Reason: {1}. Return message: {2}", resp.StatusCode.ToString(), resp.ReasonPhrase, returnContent);
+                    }
+                    return returnContent;
                 }
             }
         }
