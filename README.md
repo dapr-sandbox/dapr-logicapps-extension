@@ -29,7 +29,7 @@ By using a workflow engine, business logic can be defined in a declarative, no-c
 ## How it works
 
 >**New to Dapr?**
-> Learn more about Dapr with [this overview](https://github.com/dapr/docs/blob/master/overview/README.md)
+> Learn more about Dapr with [this overview](https://docs.dapr.io/concepts/overview/)
 
 Dapr Workflows hosts a gRPC server that implements the Dapr Client API.
 
@@ -158,7 +158,7 @@ Rejoice once more!
 
 First, create any Dapr binding of your choice.
 
-See [this](https://github.com/dapr/docs/tree/master/howto/trigger-app-with-input-binding) How-To tutorial and [sample](https://github.com/dapr/samples/tree/master/5.bindings) to get started.
+See [this](https://docs.dapr.io/developing-applications/building-blocks/bindings/howto-triggers/) How-To tutorial and [sample](https://github.com/dapr/samples/tree/master/5.bindings) to get started.
 
 In order for Dapr Workflows to be able to start a workflow from a Dapr binding event, simply name the binding with the name of the workflow you want it to trigger.
 Couldn't get any simpler!
